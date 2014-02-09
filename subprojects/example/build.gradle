@@ -1,0 +1,16 @@
+buildscript {
+    repositories {
+        mavenLocal()
+    }
+
+    dependencies {
+        classpath 'com.hjwylde.gradle.plugins.whiley:gradle-whiley-plugin:1.0.0'
+    }
+}
+
+apply plugin: 'whiley'
+
+//sourceSets {
+//    foo {}
+//}
+

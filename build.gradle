@@ -1,0 +1,38 @@
+apply from: 'dependencies.gradle'
+
+buildscript {
+    repositories {
+        maven { url 'https://github.com/ben-manes/gradle-versions-plugin/raw/mvnrepo' }
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.github.ben-manes:gradle-versions-plugin:0.5-beta-1'
+    }
+}
+
+allprojects {
+    apply plugin: 'versions'
+}
+
+subprojects {
+    buildscript {
+        repositories {
+            mavenCentral()
+        }
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    defaultTasks 'build'
+}
+
+task wrapper(type: Wrapper) {
+    group 'Help'
+    description 'Generates the Gradle wrapper files'
+
+    gradleVersion = '1.11-rc-1'
+}
+
