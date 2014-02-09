@@ -4,13 +4,9 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.hjwylde.gradle.plugins.whiley:gradle-whiley-plugin:1.0.0'
+        classpath 'com.hjwylde.gradle.plugins.whiley:gradle-whiley-plugin:+'
     }
 }
 
 apply plugin: 'whiley'
-
-//sourceSets {
-//    foo {}
-//}
 

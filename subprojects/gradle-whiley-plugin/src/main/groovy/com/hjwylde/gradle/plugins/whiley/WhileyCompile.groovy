@@ -2,6 +2,7 @@ package com.hjwylde.gradle.plugins.whiley
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.InvalidUserDataException
+import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.TaskAction
 
 /**
@@ -13,23 +14,28 @@ import org.gradle.api.tasks.TaskAction
  */
 class WhileyCompile extends DefaultTask {
 
+    public static final String BASE_WYIL_DIR = 'wyil'
+
+    private SourceSet sourceSet
+
     @TaskAction
     protected void compile() {
-        // Output directory for the files
-        //temporaryDir.mkdirs()
+        if (!sourceSet)
+            throw new InvalidUserDataException("'${name}.sourceSet' must not be empty")
+
+        // sourceSets.main.java.getAsPath()
+
+        // Create the build directories
+        sourceSet.output.classesDir.mkdirs()
+        wyilDir.mkdirs()
 
         // Source whiley files
-        def tree = project.fileTree(dir: 'src/main/whiley', include: '**/*.whiley')
-        def source = tree.files.collect { project.relativePath(it.path) - 'src/main/whiley/' }.join(' ')
+        def tree = project.fileTree(dir: sourceDir, include: '**/*.whiley')
+        def source = tree.files.collect { it.path - sourceDir.path - '/' }.join(' ')
 
-        logger.info "Executing 'wyjc -cd \"$temporaryDir\" \"$source\"'"
+        logger.info "Executing 'wyjc -cd \"{}\" -od \"{}\" \"{}\"'", sourceSet.output.classesDir, wyilDir, source
 
-        project.file('build/wyil/main').mkdirs()
-
-        project.sourceSets.main.output.classesDir.mkdirs()
-
-        def proc = ['wyjc', '-cd', project.sourceSets.main.output.classesDir, '-od', '../../../build/wyil/main',
-                source].execute([], project.file('src/main/whiley'))
+        def proc = ['wyjc', '-cd', sourceSet.output.classesDir, '-od', wyilDir, source].execute([], project.file(sourceDir))
         proc.in.eachLine { if (it) logger.info it }
         proc.waitFor()
 
@@ -41,16 +47,22 @@ class WhileyCompile extends DefaultTask {
 
             throw new InvalidUserDataException(sb.toString())
         }
+    }
 
-        // TODO: Change this to only rename the parent directory, don't need to do for each file
-        //def basePath = "$temporaryDir/src/main/whiley"
-        //tree = project.fileTree(dir: basePath, include: '**/*.class')
-        //tree.files.collect {
-            //def path = "${project.sourceSets.main.output.classesDir}/${it.path - basePath}"
-            //project.file(path).parentFile.mkdirs()
+    SourceSet getSourceSet() {
+        sourceSet
+    }
 
-            //it.renameTo(path)
-        //}
+    void setSourceSet(SourceSet sourceSet) {
+        this.sourceSet = sourceSet
+    }
+
+    File getWyilDir() {
+        new File(project.buildDir, "$BASE_WYIL_DIR/$sourceSet.name/")
+    }
+
+    File getSourceDir() {
+        project.file("src/$sourceSet.name/whiley")
     }
 }
 
