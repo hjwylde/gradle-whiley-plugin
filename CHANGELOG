@@ -1,0 +1,5 @@
+1.0.1
+* Added in dynamic support via setting a sourceSet per WhileyCompile task
+
+1.0.0
+* A basic compilation script with no customisation
