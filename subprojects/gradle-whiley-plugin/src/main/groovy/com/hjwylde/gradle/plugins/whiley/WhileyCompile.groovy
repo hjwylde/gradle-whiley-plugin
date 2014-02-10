@@ -3,6 +3,7 @@ package com.hjwylde.gradle.plugins.whiley
 import org.gradle.api.DefaultTask
 import org.gradle.api.InvalidUserDataException
 import org.gradle.api.tasks.SourceSet
+import org.gradle.api.tasks.StopActionException
 import org.gradle.api.tasks.TaskAction
 
 /**
@@ -18,12 +19,30 @@ class WhileyCompile extends DefaultTask {
 
     private SourceSet sourceSet
 
+    SourceSet getSourceSet() {
+        sourceSet
+    }
+
+    void setSourceSet(SourceSet sourceSet) {
+        this.sourceSet = sourceSet
+    }
+
+    File getWyilDir() {
+        new File(project.buildDir, "$BASE_WYIL_DIR/$sourceSet.name/")
+    }
+
+    File getSourceDir() {
+        project.file("src/$sourceSet.name/whiley")
+    }
+
     @TaskAction
     protected void compile() {
         if (!sourceSet)
             throw new InvalidUserDataException("'${name}.sourceSet' must not be empty")
 
-        // sourceSets.main.java.getAsPath()
+        // Check if the source exists
+        if (!sourceDir.exists())
+            throw new StopActionException()
 
         // Create the build directories
         sourceSet.output.classesDir.mkdirs()
@@ -47,22 +66,6 @@ class WhileyCompile extends DefaultTask {
 
             throw new InvalidUserDataException(sb.toString())
         }
-    }
-
-    SourceSet getSourceSet() {
-        sourceSet
-    }
-
-    void setSourceSet(SourceSet sourceSet) {
-        this.sourceSet = sourceSet
-    }
-
-    File getWyilDir() {
-        new File(project.buildDir, "$BASE_WYIL_DIR/$sourceSet.name/")
-    }
-
-    File getSourceDir() {
-        project.file("src/$sourceSet.name/whiley")
     }
 }
 
