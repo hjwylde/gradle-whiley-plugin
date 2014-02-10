@@ -5,7 +5,10 @@ import static org.gradle.api.tasks.SourceSet.MAIN_SOURCE_SET_NAME
 import org.gradle.api.InvalidUserDataException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.internal.file.FileResolver
 import org.gradle.api.plugins.JavaPlugin
+
+import javax.inject.Inject
 
 /**
  * TODO: Documentation
@@ -16,7 +19,17 @@ import org.gradle.api.plugins.JavaPlugin
  */
 class WhileyPlugin implements Plugin<Project> {
 
-    private Project project
+    protected Project project
+
+    private final FileResolver fileResolver
+
+    @Inject
+    public WhileyPlugin(FileResolver fileResolver) {
+        assert fileResolver
+
+        this.fileResolver = fileResolver
+    }
+
 
     /**
      * {@inheritDoc}
@@ -29,7 +42,7 @@ class WhileyPlugin implements Plugin<Project> {
 
         project.plugins.apply(JavaPlugin.class)
 
-        configureTasks()
+        configureSourceSets()
     }
 
     private void checkEnvironment() {
@@ -37,18 +50,30 @@ class WhileyPlugin implements Plugin<Project> {
             throw new InvalidUserDataException('Environment variable WHILEY_HOME is not set')
     }
 
-    private void configureTasks() {
+    private void configureSourceSets() {
         project.sourceSets.all { set ->
-            def name = set.name == MAIN_SOURCE_SET_NAME ? '' : set.name
-            def taskName = 'compile' + name.capitalize() + 'Whiley'
+            // Set up the default Whiley source set and add to the default source sets
+            WhileySourceSet whileySourceSet = new DefaultWhileySourceSet(
+                    "Whiley source '$set.name:whiley'", fileResolver)
+            set.convention.plugins.whiley = whileySourceSet
 
-            def task = project.task(taskName, type: WhileyCompile) {
-                description "Compiles Whiley source '$set.name:whiley'."
+            whileySourceSet.whiley.srcDir "src/$set.name/whiley"
+            set.resources.filter.exclude {
+                whileySourceSet.whiley.contains it.file
+            }
+            set.allSource.source whileySourceSet.whiley
 
-                sourceSet = set
+            // Create the compile task for this source set
+            def compileTaskName = set.getCompileTaskName('whiley')
+            project.task(compileTaskName, type: WhileyCompile) {
+                description "Compiles $set.whiley."
+
+                source whileySourceSet.whiley
+                destinationDir = set.output.classesDir
+                classpath = set.compileClasspath
             }
 
-            project.tasks.getByName(set.classesTaskName).dependsOn task
+            project.tasks.getByName(set.classesTaskName).dependsOn compileTaskName
         }
     }
 }

@@ -1,60 +1,27 @@
 package com.hjwylde.gradle.plugins.whiley
 
-import org.gradle.api.DefaultTask
 import org.gradle.api.InvalidUserDataException
-import org.gradle.api.tasks.SourceSet
-import org.gradle.api.tasks.StopActionException
+import org.gradle.api.file.FileCollection
+import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.TaskAction
 
-/**
- * TODO: Documentation
- *
- * @author Henry J. Wylde
- *
- * @since 1.0.0, 05/02/2014
- */
-class WhileyCompile extends DefaultTask {
+class WhileyCompile extends SourceTask {
 
-    public static final String BASE_WYIL_DIR = 'wyil'
+    @OutputDirectory
+    File destinationDir
 
-    private SourceSet sourceSet
-
-    SourceSet getSourceSet() {
-        sourceSet
-    }
-
-    void setSourceSet(SourceSet sourceSet) {
-        this.sourceSet = sourceSet
-    }
-
-    File getWyilDir() {
-        new File(project.buildDir, "$BASE_WYIL_DIR/$sourceSet.name/")
-    }
-
-    File getSourceDir() {
-        project.file("src/$sourceSet.name/whiley")
-    }
+    @InputFiles
+    FileCollection classpath
 
     @TaskAction
     protected void compile() {
-        if (!sourceSet)
-            throw new InvalidUserDataException("'${name}.sourceSet' must not be empty")
+        List files = source as List
 
-        // Check if the source exists
-        if (!sourceDir.exists())
-            throw new StopActionException()
+        logger.info "Executing '{}'", (["${getWhileyBinDir()}/wyjc", '-cd', destinationDir] + files)
 
-        // Create the build directories
-        sourceSet.output.classesDir.mkdirs()
-        wyilDir.mkdirs()
-
-        // Source whiley files
-        def tree = project.fileTree(dir: sourceDir, include: '**/*.whiley')
-        def source = tree.files.collect { it.path - sourceDir.path - '/' }.join(' ')
-
-        logger.info "Executing 'wyjc -cd \"{}\" -od \"{}\" \"{}\"'", sourceSet.output.classesDir, wyilDir, source
-
-        def proc = ['wyjc', '-cd', sourceSet.output.classesDir, '-od', wyilDir, source].execute([], project.file(sourceDir))
+        def proc = (["${getWhileyBinDir()}/wyjc", '-cd', destinationDir] + files).execute()
         proc.in.eachLine { if (it) logger.info it }
         proc.waitFor()
 
@@ -66,6 +33,12 @@ class WhileyCompile extends DefaultTask {
 
             throw new InvalidUserDataException(sb.toString())
         }
+
+        didWork = proc.exitValue() == 0
+    }
+
+    protected String getWhileyBinDir() {
+        "$System.env.WHILEY_HOME/bin"
     }
 }
 
