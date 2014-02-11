@@ -69,7 +69,7 @@ class WhileyPlugin implements Plugin<Project> {
 
             // Create the compile task for this source set
             def compileTaskName = set.getCompileTaskName('whiley')
-            project.task(compileTaskName, type: WhileyCompile) {
+            project.task(compileTaskName, type: WhileyJavaCompile) {
                 description "Compiles $set.whiley."
 
                 source whileySourceSet.whiley
@@ -82,7 +82,7 @@ class WhileyPlugin implements Plugin<Project> {
     }
 
     private void configureCompileDefaults() {
-        project.tasks.withType(WhileyCompile) {
+        project.tasks.withType(WhileyJavaCompile) {
             it.bootpath = inferWhileyBootpath(it.classpath)
         }
     }

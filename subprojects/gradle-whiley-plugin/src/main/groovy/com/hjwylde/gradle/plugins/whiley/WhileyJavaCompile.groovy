@@ -2,12 +2,14 @@ package com.hjwylde.gradle.plugins.whiley
 
 import org.gradle.api.InvalidUserDataException
 import org.gradle.api.file.FileCollection
+import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.TaskAction
 
-class WhileyCompile extends SourceTask {
+class WhileyJavaCompile extends SourceTask {
 
     @OutputDirectory
     File destinationDir
@@ -17,32 +19,28 @@ class WhileyCompile extends SourceTask {
     @InputFiles
     FileCollection bootpath
 
+    @Nested
+    WhileyCompileOptions whileyCompileOptions
+
     @TaskAction
     protected void compile() {
         checkBootpathNonEmpty()
 
-        List files = source as List
+        WhileyCompileSpec spec = [
+            whileyCompileOptions: whileyCompileOptions,
 
-        logger.info "Executing '{}'", (["${getWhileyBinDir()}/wyjc", '-wp', classpath.asPath,
-                '-bp', bootpath.asPath, '-cd', destinationDir] + files)
+            destinationDir: destinationDir,
+            source: source,
+            classpath: classpath,
+            bootpath: bootpath
+        ] as WhileyCompileSpec
 
-        // Problem here with how the whiley compiler places the files in the build directory:
-        // Currently they are placed in their entire path relative from the working directory,
-        // unlike Java where it places it in a path based only on the package delcaration
-        def proc = (["${getWhileyBinDir()}/wyjc", '-wp', classpath.asPath, '-bp', bootpath.asPath,
-                '-cd', destinationDir] + files).execute()
-        proc.in.eachLine { if (it) logger.info it }
-        proc.waitFor()
+        new WhileyCompiler().execute(spec)
 
-        logger.info "wyjc result: {}", proc.exitValue()
+        compileFix()
+    }
 
-        if (proc.exitValue() != 0) {
-            def sb = new StringBuffer()
-            proc.consumeProcessErrorStream(sb)
-
-            throw new InvalidUserDataException(sb.toString())
-        }
-
+    protected void compileFix() {
         // Hacky fix for the problem explained above...
         // This forces all source files to be located within a path matching 'src/*/whiley'
         // and for no file to have a top level package declaration of 'src'
@@ -65,16 +63,6 @@ class WhileyCompile extends SourceTask {
         if (!result) {
             logger.warn "Unable to delete directory '{}/src'", project.relativePath(destinationDir)
         }
-
-        didWork = !source.isEmpty()
-    }
-
-    protected String getWhileyDir() {
-        System.env.WHILEY_HOME
-    }
-
-    protected String getWhileyBinDir() {
-        "${getWhileyDir()}/bin"
     }
 
     private void checkBootpathNonEmpty() {
