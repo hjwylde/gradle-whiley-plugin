@@ -1,0 +1,20 @@
+buildscript {
+    repositories {
+        mavenLocal()
+    }
+
+    dependencies {
+        classpath 'com.hjwylde.gradle.plugins.whiley:gradle-whiley-plugin:+'
+    }
+}
+
+apply plugin: 'whiley'
+
+dependencies {
+    compile libraries.whiley_all
+}
+
+compileWhiley {
+    whileyOptions.verify = true
+}
+
