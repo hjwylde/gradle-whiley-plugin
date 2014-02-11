@@ -3,4 +3,5 @@ ext {
 }
 
 libraries.groovy_all = 'org.codehaus.groovy:groovy-all:2.2.1'
+libraries.whiley_all = fileTree(dir: "$System.env.WHILEY_HOME/lib", include: '*.jar')
 

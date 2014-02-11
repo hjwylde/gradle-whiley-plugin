@@ -6,6 +6,7 @@ import org.gradle.api.InvalidUserDataException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.internal.file.FileResolver
+import org.gradle.api.file.FileCollection
 import org.gradle.api.plugins.JavaPlugin
 
 import javax.inject.Inject
@@ -19,14 +20,16 @@ import javax.inject.Inject
  */
 class WhileyPlugin implements Plugin<Project> {
 
+    //private static final List<String> WHILEY_CLASSPATH_LIBS = ['jasm', 'wybs', 'wycc', 'wycs', 'wyc',
+    //        'wyil', 'wyjc', 'wyrl', 'wyrt']
+    private static final List<String> WHILEY_BOOTPATH_LIBS = ['wyrt']
+
     protected Project project
 
     private final FileResolver fileResolver
 
     @Inject
     public WhileyPlugin(FileResolver fileResolver) {
-        assert fileResolver
-
         this.fileResolver = fileResolver
     }
 
@@ -43,6 +46,7 @@ class WhileyPlugin implements Plugin<Project> {
         project.plugins.apply(JavaPlugin.class)
 
         configureSourceSets()
+        configureCompileDefaults()
     }
 
     private void checkEnvironment() {
@@ -74,6 +78,23 @@ class WhileyPlugin implements Plugin<Project> {
             }
 
             project.tasks.getByName(set.classesTaskName).dependsOn compileTaskName
+        }
+    }
+
+    private void configureCompileDefaults() {
+        project.tasks.withType(WhileyCompile) {
+            it.bootpath = inferWhileyBootpath(it.classpath)
+        }
+    }
+
+    private FileCollection inferWhileyBootpath(FileCollection classpath) {
+        // TODO: Fix me... This doesn't actually filter the file collection
+        project.files(classpath) {
+            filter { path ->
+                WHILEY_BOOTPATH_LIBS.any {
+                    path.name.startsWith it
+                }
+            }
         }
     }
 }

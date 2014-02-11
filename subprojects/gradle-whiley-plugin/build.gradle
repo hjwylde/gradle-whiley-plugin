@@ -5,6 +5,7 @@ dependencies {
     compile gradleApi()
 
     compile libraries.groovy_all
+    compile libraries.whiley_all
 }
 
 defaultTasks 'build', 'install'

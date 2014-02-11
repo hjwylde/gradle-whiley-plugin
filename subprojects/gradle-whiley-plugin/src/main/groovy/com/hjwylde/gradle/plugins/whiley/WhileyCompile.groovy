@@ -14,17 +14,23 @@ class WhileyCompile extends SourceTask {
 
     @InputFiles
     FileCollection classpath
+    @InputFiles
+    FileCollection bootpath
 
     @TaskAction
     protected void compile() {
+        checkBootpathNonEmpty()
+
         List files = source as List
 
-        logger.info "Executing '{}'", (["${getWhileyBinDir()}/wyjc", '-cd', destinationDir] + files)
+        logger.info "Executing '{}'", (["${getWhileyBinDir()}/wyjc", '-wp', classpath.asPath,
+                '-bp', bootpath.asPath, '-cd', destinationDir] + files)
 
         // Problem here with how the whiley compiler places the files in the build directory:
         // Currently they are placed in their entire path relative from the working directory,
         // unlike Java where it places it in a path based only on the package delcaration
-        def proc = (["${getWhileyBinDir()}/wyjc", '-cd', destinationDir] + files).execute()
+        def proc = (["${getWhileyBinDir()}/wyjc", '-wp', classpath.asPath, '-bp', bootpath.asPath,
+                '-cd', destinationDir] + files).execute()
         proc.in.eachLine { if (it) logger.info it }
         proc.waitFor()
 
@@ -69,6 +75,13 @@ class WhileyCompile extends SourceTask {
 
     protected String getWhileyBinDir() {
         "${getWhileyDir()}/bin"
+    }
+
+    private void checkBootpathNonEmpty() {
+        if (!bootpath) {
+            throw new InvalidUserDataException("${name}.bootpath cannot be empty, if a WDK is " +
+                    "added to the compile classpath then the bootpath will be automatically inferred")
+        }
     }
 }
 
