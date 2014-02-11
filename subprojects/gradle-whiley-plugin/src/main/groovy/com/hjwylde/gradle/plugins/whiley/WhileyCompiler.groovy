@@ -4,13 +4,18 @@ import org.gradle.api.InvalidUserDataException
 import org.gradle.api.internal.tasks.SimpleWorkResult
 import org.gradle.api.internal.tasks.compile.Compiler
 import org.gradle.api.tasks.WorkResult
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 class WhileyCompiler implements Compiler<WhileyCompileSpec> {
 
+    private static final Logger logger = LoggerFactory.getLogger(WhileyCompiler)
+
     WorkResult execute(WhileyCompileSpec spec) {
         // TODO: Move this to using the wyjc.Wyjc class
-        def commandline = ["$System.env.WHILEY_HOME/wyjc"]
+        def commandLine = ["$System.env.WHILEY_HOME/bin/wyjc"]
 
+        // TODO: Move the check spec into this class
         assert spec.destinationDir
         commandLine += ['-cd', spec.destinationDir]
 
@@ -18,7 +23,7 @@ class WhileyCompiler implements Compiler<WhileyCompileSpec> {
         commandLine += ['-wp', spec.classpath.asPath]
 
         assert spec.bootpath
-        commandLine += ['-bp', bootpath.asPath]
+        commandLine += ['-bp', spec.bootpath.asPath]
 
         def options = spec.whileyCompileOptions
 
@@ -67,7 +72,7 @@ class WhileyCompiler implements Compiler<WhileyCompileSpec> {
             throw new InvalidUserDataException(sb.toString())
         }
 
-        SimpleWorkResult(true)
+        new SimpleWorkResult(true)
     }
 }
 

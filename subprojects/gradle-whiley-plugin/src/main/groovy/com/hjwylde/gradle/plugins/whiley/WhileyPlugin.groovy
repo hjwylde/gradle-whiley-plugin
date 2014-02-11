@@ -26,13 +26,12 @@ class WhileyPlugin implements Plugin<Project> {
 
     protected Project project
 
-    private final FileResolver fileResolver
+    protected final FileResolver fileResolver
 
     @Inject
     public WhileyPlugin(FileResolver fileResolver) {
         this.fileResolver = fileResolver
     }
-
 
     /**
      * {@inheritDoc}
@@ -58,7 +57,7 @@ class WhileyPlugin implements Plugin<Project> {
         project.sourceSets.all { set ->
             // Set up the default Whiley source set and add to the default source sets
             WhileySourceSet whileySourceSet = new DefaultWhileySourceSet(
-                    "Whiley source '$set.name:whiley'", fileResolver)
+                    "$set.name Whiley source", fileResolver)
             set.convention.plugins.whiley = whileySourceSet
 
             whileySourceSet.whiley.srcDir "src/$set.name/whiley"
@@ -70,7 +69,7 @@ class WhileyPlugin implements Plugin<Project> {
             // Create the compile task for this source set
             def compileTaskName = set.getCompileTaskName('whiley')
             project.task(compileTaskName, type: WhileyJavaCompile) {
-                description "Compiles $set.whiley."
+                description "Compiles Whiley source '$set.whiley:whiley'."
 
                 source whileySourceSet.whiley
                 destinationDir = set.output.classesDir

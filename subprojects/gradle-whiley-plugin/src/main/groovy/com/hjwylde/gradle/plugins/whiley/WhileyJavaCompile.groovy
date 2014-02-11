@@ -2,7 +2,6 @@ package com.hjwylde.gradle.plugins.whiley
 
 import org.gradle.api.InvalidUserDataException
 import org.gradle.api.file.FileCollection
-import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.OutputDirectory
@@ -20,20 +19,31 @@ class WhileyJavaCompile extends SourceTask {
     FileCollection bootpath
 
     @Nested
-    WhileyCompileOptions whileyCompileOptions
+    WhileyCompileOptions whileyCompileOptions = new WhileyCompileOptions()
+
+    public WhileyCompileOptions getWhileyOptions() {
+        whileyCompileOptions
+    }
+
+    public void setWhileyOptions(WhileyCompileOptions whileyCompileOptions) {
+        this.whileyCompileOptions = whileyCompileOptions
+    }
+
+    public void setWhileyOptions(Closure closure) {
+        // TODO: Implement this method
+        assert false, 'Not implemented!'
+    }
 
     @TaskAction
     protected void compile() {
-        checkBootpathNonEmpty()
+        WhileyCompileSpec spec = new DefaultWhileyCompileSpec(
+                whileyCompileOptions: whileyOptions,
+                destinationDir: destinationDir,
+                source: source,
+                classpath: classpath,
+                bootpath: bootpath)
 
-        WhileyCompileSpec spec = [
-            whileyCompileOptions: whileyCompileOptions,
-
-            destinationDir: destinationDir,
-            source: source,
-            classpath: classpath,
-            bootpath: bootpath
-        ] as WhileyCompileSpec
+        checkWhileyCompileSpec(spec)
 
         new WhileyCompiler().execute(spec)
 
@@ -65,11 +75,19 @@ class WhileyJavaCompile extends SourceTask {
         }
     }
 
-    private void checkBootpathNonEmpty() {
-        if (!bootpath) {
-            throw new InvalidUserDataException("${name}.bootpath cannot be empty, if a WDK is " +
-                    "added to the compile classpath then the bootpath will be automatically inferred")
-        }
+    private void checkWhileyCompileSpec(WhileyCompileSpec spec) {
+        if (!spec.whileyCompileOptions)
+            throw new InvalidUserDataException("${name}.whileyCompileOptions cannot be empty or " +
+                    'null')
+
+        if (!spec.destinationDir)
+            throw new InvalidUserDataException("${name}.destinationDir cannot be empty or null")
+        if (!spec.source)
+            throw new InvalidUserDataException("${name}.source cannot be empty or null")
+        if (!spec.classpath)
+            throw new InvalidUserDataException("${name}.classpath cannot be empty or null")
+        if (!spec.bootpath)
+            throw new InvalidUserDataException("${name}.bootpath cannot be empty or null")
     }
 }
 
