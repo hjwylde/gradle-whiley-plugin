@@ -1,6 +1,7 @@
 package com.hjwylde.gradle.plugins.whiley
 
 import org.gradle.api.InvalidUserDataException
+import org.gradle.api.Project
 import org.gradle.api.internal.tasks.SimpleWorkResult
 import org.gradle.api.internal.tasks.compile.Compiler
 import org.gradle.api.tasks.WorkResult
@@ -11,18 +12,20 @@ class WhileyCompiler implements Compiler<WhileyCompileSpec> {
 
     private static final Logger logger = LoggerFactory.getLogger(WhileyCompiler)
 
+    final Project project
+
+    WhileyCompiler(Project project) {
+        this.project = project
+    }
+
     WorkResult execute(WhileyCompileSpec spec) {
+        checkWhileyCompileSpec(spec)
+
         // TODO: Move this to using the wyjc.Wyjc class
         def commandLine = ["$System.env.WHILEY_HOME/bin/wyjc"]
 
-        // TODO: Move the check spec into this class
-        assert spec.destinationDir
         commandLine += ['-cd', spec.destinationDir]
-
-        assert spec.classpath
         commandLine += ['-wp', spec.classpath.asPath]
-
-        assert spec.bootpath
         commandLine += ['-bp', spec.bootpath.asPath]
 
         def options = spec.whileyCompileOptions
@@ -72,7 +75,49 @@ class WhileyCompiler implements Compiler<WhileyCompileSpec> {
             throw new InvalidUserDataException(sb.toString())
         }
 
+        compileFix()
+
         new SimpleWorkResult(true)
+    }
+
+    private void checkWhileyCompileSpec(WhileyCompileSpec spec) {
+        if (!spec.whileyCompileOptions)
+            throw new InvalidUserDataException("${name}.whileyCompileOptions cannot be empty or " +
+                    'null')
+
+        if (!spec.destinationDir)
+            throw new InvalidUserDataException("${name}.destinationDir cannot be empty or null")
+        if (!spec.source)
+            throw new InvalidUserDataException("${name}.source cannot be empty or null")
+        if (!spec.classpath)
+            throw new InvalidUserDataException("${name}.classpath cannot be empty or null")
+        if (!spec.bootpath)
+            throw new InvalidUserDataException("${name}.bootpath cannot be empty or null")
+    }
+
+    private void compileFix() {
+        // Hacky fix for the problem explained above...
+        // This forces all source files to be located within a path matching 'src/*/whiley'
+        // and for no file to have a top level package declaration of 'src'
+        def result = project.copy {
+            from("$destinationDir/src/$destinationDir.name/whiley") {
+                include '**/*.class'
+            }
+            into destinationDir
+        }
+
+        if (!result) {
+            throw new InvalidUserDataException("Unable to move source files from " +
+                    "'${project.relativePath(destinationDir)}/src/*/whiley' to " +
+                    "'${project.relativePath(destinationDir)}'")
+        }
+
+        // Delete the src directory
+        result = project.delete("$destinationDir/src")
+
+        if (!result) {
+            logger.warn "Unable to delete directory '{}/src'", project.relativePath(destinationDir)
+        }
     }
 }
 
