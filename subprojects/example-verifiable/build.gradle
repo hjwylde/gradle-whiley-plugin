@@ -8,7 +8,6 @@ buildscript {
     }
 }
 
-/*
 apply plugin: 'whiley'
 
 dependencies {
@@ -18,5 +17,4 @@ dependencies {
 compileWhiley {
     whileyOptions.verify = true
 }
-*/
 

@@ -16,3 +16,7 @@ dependencies {
     compile libraries.whiley_all
 }
 
+compileWhiley {
+    whileyOptions.verify = true
+}
+

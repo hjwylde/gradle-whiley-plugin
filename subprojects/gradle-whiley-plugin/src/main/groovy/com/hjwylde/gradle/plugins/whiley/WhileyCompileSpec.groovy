@@ -7,13 +7,13 @@ interface WhileyCompileSpec extends CompileSpec {
 
     WhileyCompileOptions getWhileyCompileOptions()
 
-    File getDestinationDir()
-
-    void setDestinationDir(File destinationDir)
-
     FileCollection getSource()
 
     void setSource(FileCollection source)
+
+    File getDestinationDir()
+
+    void setDestinationDir(File destinationDir)
 
     FileCollection getClasspath()
 

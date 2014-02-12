@@ -19,34 +19,35 @@ class WhileyCompiler implements Compiler<WhileyCompileSpec> {
     }
 
     WorkResult execute(WhileyCompileSpec spec) {
-        checkWhileyCompileSpec(spec)
-
         // TODO: Move this to using the wyjc.Wyjc class
         def commandLine = ["$System.env.WHILEY_HOME/bin/wyjc"]
 
+        assert spec.destinationDir, 'spec.destinationDir cannot be empty or null'
         commandLine += ['-cd', spec.destinationDir]
+        assert spec.classpath, 'spec.classpath cannot be empty or null'
         commandLine += ['-wp', spec.classpath.asPath]
+        assert spec.bootpath, 'spec.bootpath cannot be empty or null'
         commandLine += ['-bp', spec.bootpath.asPath]
 
         def options = spec.whileyCompileOptions
 
-        if (options.verbose) {
+        if (options?.verbose) {
             commandLine += ['-verbose']
         }
 
-        if (options.verify) {
+        if (options?.verify) {
             commandLine += ['-verify']
         }
 
-        if (options.wyildir) {
+        if (options?.wyildir) {
             commandLine += ['-wyildir', options.wyildir]
         }
 
-        if (options.wyaldir) {
+        if (options?.wyaldir) {
             commandLine += ['-wyaldir', options.wyaldir]
         }
 
-        if (options.wycsdir) {
+        if (options?.wycsdir) {
             commandLine += ['-wycsdir', options.wycsdir]
         }
 
@@ -78,21 +79,6 @@ class WhileyCompiler implements Compiler<WhileyCompileSpec> {
 
             throw new InvalidUserDataException(sb.toString())
         }
-    }
-
-    private void checkWhileyCompileSpec(WhileyCompileSpec spec) {
-        if (!spec.whileyCompileOptions)
-            throw new InvalidUserDataException("${name}.whileyCompileOptions cannot be empty or " +
-                    'null')
-
-        if (!spec.destinationDir)
-            throw new InvalidUserDataException("${name}.destinationDir cannot be empty or null")
-        if (!spec.source)
-            throw new InvalidUserDataException("${name}.source cannot be empty or null")
-        if (!spec.classpath)
-            throw new InvalidUserDataException("${name}.classpath cannot be empty or null")
-        if (!spec.bootpath)
-            throw new InvalidUserDataException("${name}.bootpath cannot be empty or null")
     }
 
     private void compileFix(WhileyCompileSpec spec) {

@@ -6,9 +6,8 @@ class DefaultWhileyCompileSpec implements WhileyCompileSpec {
 
     WhileyCompileOptions whileyCompileOptions
 
-    File destinationDir
     FileCollection source
+    File destinationDir
     FileCollection classpath
     FileCollection bootpath
 }
-
