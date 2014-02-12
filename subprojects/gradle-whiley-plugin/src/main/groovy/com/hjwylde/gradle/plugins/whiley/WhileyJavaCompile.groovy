@@ -32,6 +32,8 @@ class WhileyJavaCompile extends SourceTask {
                 classpath: classpath,
                 bootpath: bootpath)
 
+        println whileyOptions.properties
+
         compiler.execute(spec)
     }
 }

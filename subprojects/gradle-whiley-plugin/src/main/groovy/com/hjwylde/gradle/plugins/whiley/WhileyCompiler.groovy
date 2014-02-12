@@ -12,7 +12,7 @@ class WhileyCompiler implements Compiler<WhileyCompileSpec> {
 
     private static final Logger logger = LoggerFactory.getLogger(WhileyCompiler)
 
-    final Project project
+    protected final Project project
 
     WhileyCompiler(Project project) {
         this.project = project
@@ -54,9 +54,13 @@ class WhileyCompiler implements Compiler<WhileyCompileSpec> {
         commandLine += source
 
         execute(commandLine)
+
+        compileFix(spec)
+
+        new SimpleWorkResult(true)
     }
 
-    protected WorkResult execute(List<String> commandLine) {
+    protected void execute(List<String> commandLine) {
         logger.info "Executing '{}'", commandLine
 
         // Problem here with how the whiley compiler places the files in the build directory:
@@ -74,10 +78,6 @@ class WhileyCompiler implements Compiler<WhileyCompileSpec> {
 
             throw new InvalidUserDataException(sb.toString())
         }
-
-        compileFix()
-
-        new SimpleWorkResult(true)
     }
 
     private void checkWhileyCompileSpec(WhileyCompileSpec spec) {
@@ -95,28 +95,28 @@ class WhileyCompiler implements Compiler<WhileyCompileSpec> {
             throw new InvalidUserDataException("${name}.bootpath cannot be empty or null")
     }
 
-    private void compileFix() {
+    private void compileFix(WhileyCompileSpec spec) {
         // Hacky fix for the problem explained above...
         // This forces all source files to be located within a path matching 'src/*/whiley'
         // and for no file to have a top level package declaration of 'src'
         def result = project.copy {
-            from("$destinationDir/src/$destinationDir.name/whiley") {
+            from("$spec.destinationDir/src/$spec.destinationDir.name/whiley") {
                 include '**/*.class'
             }
-            into destinationDir
+            into spec.destinationDir
         }
 
         if (!result) {
             throw new InvalidUserDataException("Unable to move source files from " +
-                    "'${project.relativePath(destinationDir)}/src/*/whiley' to " +
-                    "'${project.relativePath(destinationDir)}'")
+                    "'${project.relativePath(spec.destinationDir)}/src/*/whiley' to " +
+                    "'${project.relativePath(spec.destinationDir)}'")
         }
 
         // Delete the src directory
-        result = project.delete("$destinationDir/src")
+        result = project.delete("$spec.destinationDir/src")
 
         if (!result) {
-            logger.warn "Unable to delete directory '{}/src'", project.relativePath(destinationDir)
+            logger.warn "Unable to delete directory '{}/src'", project.relativePath(spec.destinationDir)
         }
     }
 }

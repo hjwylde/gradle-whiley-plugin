@@ -20,6 +20,9 @@ import javax.inject.Inject
  */
 class WhileyPlugin implements Plugin<Project> {
 
+    public static final String WHILEY_EXTENSION_NAME = 'whiley'
+    public static final String WHILEY_COMPILER_EXTENSION_NAME = 'compiler'
+
     //private static final List<String> WHILEY_CLASSPATH_LIBS = ['jasm', 'wybs', 'wycc', 'wycs', 'wyc',
     //        'wyil', 'wyjc', 'wyrl', 'wyrt']
     private static final List<String> WHILEY_BOOTPATH_LIBS = ['wyrt']
@@ -29,7 +32,7 @@ class WhileyPlugin implements Plugin<Project> {
     protected final FileResolver fileResolver
 
     @Inject
-    public WhileyPlugin(FileResolver fileResolver) {
+    WhileyPlugin(FileResolver fileResolver) {
         this.fileResolver = fileResolver
     }
 
@@ -44,6 +47,7 @@ class WhileyPlugin implements Plugin<Project> {
 
         project.plugins.apply(JavaPlugin.class)
 
+        configureExtensions()
         configureSourceSets()
         configureCompileDefaults()
     }
@@ -51,6 +55,11 @@ class WhileyPlugin implements Plugin<Project> {
     private void checkEnvironment() {
         if (!System.env.WHILEY_HOME)
             throw new InvalidUserDataException('Environment variable WHILEY_HOME is not set')
+    }
+
+    private void configureExtensions() {
+        def whileyExtension = project.extensions.create(WHILEY_EXTENSION_NAME, WhileyExtension)
+        whileyExtension.extensions.create(WHILEY_COMPILER_EXTENSION_NAME, WhileyCompilerExtension)
     }
 
     private void configureSourceSets() {
@@ -83,6 +92,27 @@ class WhileyPlugin implements Plugin<Project> {
     private void configureCompileDefaults() {
         project.tasks.withType(WhileyJavaCompile) {
             it.bootpath = inferWhileyBootpath(it.classpath)
+        }
+
+        // TODO: There must be a better, 'groovy', way to do this...
+        // It was the only way I knew for now how to execute the closure after the configuration phase
+        // of Gradle, as the extension customisation from the user wasn't being loaded properly
+        project.afterEvaluate { project ->
+            project.tasks.withType(WhileyJavaCompile) {
+                def whileyCompilerExtension = project.extensions.findByName(WHILEY_EXTENSION_NAME).
+                        extensions.findByName(WHILEY_COMPILER_EXTENSION_NAME)
+
+                // TODO: This overwrites user set options...
+                it.whileyOptions = [
+                    verbose: whileyCompilerExtension.verbose,
+
+                    verify: whileyCompilerExtension.verbose,
+
+                    wyildir: whileyCompilerExtension.wyildir,
+                    wyaldir: whileyCompilerExtension.wyaldir,
+                    wycsdir: whileyCompilerExtension.wycsdir
+                ] as WhileyCompileOptions
+            }
         }
     }
 
