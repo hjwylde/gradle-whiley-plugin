@@ -8,25 +8,40 @@ import org.gradle.api.tasks.WorkResult
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-class WhileyCompiler implements Compiler<WhileyCompileSpec> {
+/**
+ * An implementation of a whiley compiler that executes the binaries provided by the installed
+ * Whiley Development Kit.
+ *
+ * @author Henry J. Wylde
+ *
+ * @since 1.0.0, 12/02/2014
+ */
+class BinaryWhileyCompiler implements Compiler<WhileyCompileSpec> {
 
-    private static final Logger logger = LoggerFactory.getLogger(WhileyCompiler)
+    public static final String WHILEY_HOME_ENV_NAME = 'WHILEY_HOME'
+
+    private static final Logger logger = LoggerFactory.getLogger(BinaryWhileyCompiler)
 
     protected final Project project
 
-    WhileyCompiler(Project project) {
+    /**
+     * Creates a new compiler for the given project.
+     */
+    BinaryWhileyCompiler(Project project) {
+        assert project, 'project cannot be null'
+
         this.project = project
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     WorkResult execute(WhileyCompileSpec spec) {
-        // TODO: Move this to using the wyjc.Wyjc class
-        def commandLine = ["$System.env.WHILEY_HOME/bin/wyjc"]
+        def commandLine = ["${getWhileyHome()}/bin/wyjc"]
 
-        assert spec.destinationDir, 'spec.destinationDir cannot be empty or null'
         commandLine += ['-cd', spec.destinationDir]
-        assert spec.classpath, 'spec.classpath cannot be empty or null'
         commandLine += ['-wp', spec.classpath.asPath]
-        assert spec.bootpath, 'spec.bootpath cannot be empty or null'
         commandLine += ['-bp', spec.bootpath.asPath]
 
         def options = spec.whileyCompileOptions
@@ -104,6 +119,12 @@ class WhileyCompiler implements Compiler<WhileyCompileSpec> {
         if (!result) {
             logger.warn "Unable to delete directory '{}/src'", project.relativePath(spec.destinationDir)
         }
+    }
+
+    private String getWhileyHome() {
+        assert System.env[WHILEY_HOME_ENV_NAME], "System environment does not contain the '$WHILEY_HOME_ENV_NAME' variable"
+
+        System.env[WHILEY_HOME_ENV_NAME]
     }
 }
 

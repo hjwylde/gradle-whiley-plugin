@@ -9,44 +9,56 @@ import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.TaskAction
 
-class WhileyJavaCompile extends SourceTask {
+/**
+ * Compiles whiley source files into class files.
+ *
+ * @author Henry J. Wylde
+ *
+ * @since 1.0.0, 12/02/2014
+ */
+class WhileyCompile extends SourceTask {
 
-    Compiler<WhileyCompileSpec> compiler = new WhileyCompiler(project)
+    /**
+     * The compiler to use for the source code.
+     */
+    Compiler<WhileyCompileSpec> compiler = new BinaryWhileyCompiler(project)
 
+    /**
+     * The destination directory for the compiled source code.
+     */
     @OutputDirectory
     File destinationDir
 
+    /**
+     * The classpath to use during compilation.
+     */
     @InputFiles
     FileCollection classpath
+    /**
+     * The bootpath to use during compilation.
+     */
     @InputFiles
     FileCollection bootpath
 
+    /**
+     * The optional whiley compile options to configure to the compiler.
+     */
     @Nested
     WhileyCompileOptions whileyOptions = new WhileyCompileOptions()
 
+    /**
+     * Compiles the whiley source code.
+     */
     @TaskAction
     protected void compile() {
-        WhileyCompileSpec spec = new DefaultWhileyCompileSpec(
+        def spec = new EmptyWhileyCompileSpec(
                 whileyCompileOptions: whileyOptions,
                 source: source,
                 destinationDir: destinationDir,
                 classpath: classpath,
                 bootpath: bootpath)
 
-        checkWhileyCompileSpec(spec)
-
         compiler.execute(spec)
-    }
-
-    private void checkWhileyCompileSpec(WhileyCompileSpec spec) {
-        if (!spec.source)
-            throw new InvalidUserDataException("${name}.source cannot be empty or null")
-        if (!spec.destinationDir)
-            throw new InvalidUserDataException("${name}.destinationDir cannot be null")
-        if (spec.classpath == null)
-            throw new InvalidUserDataException("${name}.classpath cannot be null")
-        if (!spec.bootpath)
-            throw new InvalidUserDataException("${name}.bootpath cannot be empty or null")
     }
 }
 
