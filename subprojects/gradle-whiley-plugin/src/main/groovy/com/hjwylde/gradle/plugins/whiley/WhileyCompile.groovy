@@ -21,7 +21,8 @@ class WhileyCompile extends SourceTask {
     /**
      * The compiler to use for the source code.
      */
-    Compiler<WhileyCompileSpec> compiler = new BinaryWhileyCompiler(project)
+    Compiler<WhileyCompileSpec> compiler = new WhileyCompiler(project)
+    //Compiler<WhileyCompileSpec> compiler = new BinaryWhileyCompiler(project)
 
     /**
      * The destination directory for the compiled source code.

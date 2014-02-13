@@ -1,20 +1,24 @@
 buildscript {
-    repositories {
-        mavenLocal()
-    }
-
     dependencies {
         classpath 'com.hjwylde.gradle.plugins.whiley:gradle-whiley-plugin:+'
     }
 }
 
 apply plugin: 'whiley'
+apply plugin: 'application'
 
 dependencies {
-    compile libraries.whiley_all
+    compile libraries.wyrt
+
+    runtime libraries.whiley_all
 }
 
+mainClassName = 'com.example.HelloWorld'
+
 compileWhiley {
+    //compiler = new com.hjwylde.gradle.plugins.whiley.BinaryWhileyCompiler(project)
+
+    //whileyOptions.verbose = true
     whileyOptions.verify = true
 }
 

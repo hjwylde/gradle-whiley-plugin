@@ -2,11 +2,10 @@ package com.hjwylde.gradle.plugins.whiley
 
 import org.gradle.api.InvalidUserDataException
 import org.gradle.api.Project
-import org.gradle.api.internal.tasks.SimpleWorkResult
 import org.gradle.api.internal.tasks.compile.Compiler
+import org.gradle.api.logging.Logger
+import org.gradle.api.logging.Logging
 import org.gradle.api.tasks.WorkResult
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 
 /**
  * An implementation of a whiley compiler that executes the binaries provided by the installed
@@ -20,7 +19,7 @@ class BinaryWhileyCompiler implements Compiler<WhileyCompileSpec> {
 
     public static final String WHILEY_HOME_ENV_NAME = 'WHILEY_HOME'
 
-    private static final Logger logger = LoggerFactory.getLogger(BinaryWhileyCompiler)
+    private static final Logger logger = Logging.getLogger(BinaryWhileyCompiler)
 
     protected final Project project
 
@@ -38,52 +37,29 @@ class BinaryWhileyCompiler implements Compiler<WhileyCompileSpec> {
      */
     @Override
     WorkResult execute(WhileyCompileSpec spec) {
-        def commandLine = ["${getWhileyHome()}/bin/wyjc"]
-
-        commandLine += ['-cd', spec.destinationDir]
-        commandLine += ['-wp', spec.classpath.asPath]
-        commandLine += ['-bp', spec.bootpath.asPath]
-
-        def options = spec.whileyCompileOptions
-
-        if (options?.verbose) {
-            commandLine += ['-verbose']
-        }
-
-        if (options?.verify) {
-            commandLine += ['-verify']
-        }
-
-        if (options?.wyildir) {
-            commandLine += ['-wyildir', options.wyildir]
-        }
-
-        if (options?.wyaldir) {
-            commandLine += ['-wyaldir', options.wyaldir]
-        }
-
-        if (options?.wycsdir) {
-            commandLine += ['-wycsdir', options.wycsdir]
-        }
-
-        List source = spec.source as List
-        commandLine += source
-
-        execute(commandLine)
+        execute([inferWyjcBinary()] + generateCompilerArgs(spec), spec.verbose)
 
         compileFix(spec)
 
-        new SimpleWorkResult(true)
+        true as WorkResult
     }
 
-    protected void execute(List<String> commandLine) {
+    protected void execute(List<String> commandLine, boolean verbose) {
         logger.info "Executing '{}'", commandLine
 
         // Problem here with how the whiley compiler places the files in the build directory:
         // Currently they are placed in their entire path relative from the working directory,
         // unlike Java where it places it in a path based only on the package delcaration
         def proc = commandLine.execute()
-        proc.in.eachLine { if (it) logger.info it }
+        proc.in.eachLine {
+            if (it) {
+                if (verbose) {
+                    logger.lifecycle it
+                } else {
+                    logger.info it
+                }
+            }
+        }
         proc.waitFor()
 
         logger.info "wyjc result: {}", proc.exitValue()
@@ -122,9 +98,39 @@ class BinaryWhileyCompiler implements Compiler<WhileyCompileSpec> {
     }
 
     private String getWhileyHome() {
-        assert System.env[WHILEY_HOME_ENV_NAME], "System environment does not contain the '$WHILEY_HOME_ENV_NAME' variable"
+        //assert System.env[WHILEY_HOME_ENV_NAME], "System environment does not contain the '$WHILEY_HOME_ENV_NAME' variable"
 
         System.env[WHILEY_HOME_ENV_NAME]
+    }
+
+    private String inferWyjcBinary() {
+        getWhileyHome() ? getWhileyHome() + '/bin/wyjc' : 'wyjc'
+    }
+
+    private List<String> generateCompilerArgs(WhileyCompileSpec spec) {
+        def args = ['-cd', spec.destinationDir]
+        args += ['-wp', spec.classpath.asPath]
+        args += ['-bp', spec.bootpath.asPath]
+
+        def options = spec.whileyCompileOptions
+
+        if (options?.verbose) {
+            args += ['-verbose']
+        }
+        if (options?.verify) {
+            args += ['-verify']
+        }
+        if (options?.wyildir) {
+            args += ['-wyildir', options.wyildir]
+        }
+        if (options?.wyaldir) {
+            args += ['-wyaldir', options.wyaldir]
+        }
+        if (options?.wycsdir) {
+            args += ['-wycsdir', options.wycsdir]
+        }
+
+        args + (spec.source as List)
     }
 }
 
