@@ -1,6 +1,8 @@
 package com.hjwylde.gradle.plugins.whiley
 
+import org.gradle.api.Incubating
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 
@@ -60,6 +62,15 @@ class WhileyCompileOptions {
     @Optional
     @OutputDirectory
     File wycsdir
+
+    /**
+     * The base directory for whiley source files. This method is temporary while the compiler does
+     * not support files from more than one base directory.
+     */
+    @Incubating
+    @Optional
+    @InputDirectory
+    File whileydir
 
     // TODO: Add in ability to choose the pipeline options
 }

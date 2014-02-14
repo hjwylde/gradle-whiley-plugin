@@ -9,7 +9,9 @@ import org.gradle.api.tasks.WorkResult
 
 /**
  * An implementation of a whiley compiler that executes the binaries provided by the installed
- * Whiley Development Kit.
+ * Whiley Development Kit. The compiler will attempt to source them by looking at the environment
+ * variable 'WHILEY_HOME'. If 'WHILEY_HOME' is not set then it will just try executing the command,
+ * assuming that it will be on the system path.
  *
  * @author Henry J. Wylde
  *
@@ -39,7 +41,7 @@ class BinaryWhileyCompiler implements Compiler<WhileyCompileSpec> {
     WorkResult execute(WhileyCompileSpec spec) {
         execute([inferWyjcBinary()] + generateCompilerArgs(spec), spec.verbose)
 
-        compileFix(spec)
+        //compileFix(spec)
 
         true as WorkResult
     }
@@ -72,34 +74,7 @@ class BinaryWhileyCompiler implements Compiler<WhileyCompileSpec> {
         }
     }
 
-    private void compileFix(WhileyCompileSpec spec) {
-        // Hacky fix for the problem explained above...
-        // This forces all source files to be located within a path matching 'src/*/whiley'
-        // and for no file to have a top level package declaration of 'src'
-        def result = project.copy {
-            from("$spec.destinationDir/src/$spec.destinationDir.name/whiley") {
-                include '**/*.class'
-            }
-            into spec.destinationDir
-        }
-
-        if (!result) {
-            throw new InvalidUserDataException("Unable to move source files from " +
-                    "'${project.relativePath(spec.destinationDir)}/src/*/whiley' to " +
-                    "'${project.relativePath(spec.destinationDir)}'")
-        }
-
-        // Delete the src directory
-        result = project.delete("$spec.destinationDir/src")
-
-        if (!result) {
-            logger.warn "Unable to delete directory '{}/src'", project.relativePath(spec.destinationDir)
-        }
-    }
-
     private String getWhileyHome() {
-        //assert System.env[WHILEY_HOME_ENV_NAME], "System environment does not contain the '$WHILEY_HOME_ENV_NAME' variable"
-
         System.env[WHILEY_HOME_ENV_NAME]
     }
 
@@ -128,6 +103,9 @@ class BinaryWhileyCompiler implements Compiler<WhileyCompileSpec> {
         }
         if (options?.wycsdir) {
             args += ['-wycsdir', options.wycsdir]
+        }
+        if (options?.whileydir) {
+            args += ['-whileydir', options.whileydir]
         }
 
         args + (spec.source as List)

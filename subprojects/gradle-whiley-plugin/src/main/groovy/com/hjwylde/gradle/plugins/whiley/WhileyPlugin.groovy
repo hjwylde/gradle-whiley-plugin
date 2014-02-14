@@ -2,7 +2,6 @@ package com.hjwylde.gradle.plugins.whiley
 
 import static org.gradle.api.tasks.SourceSet.MAIN_SOURCE_SET_NAME
 
-import org.gradle.api.Incubating
 import org.gradle.api.InvalidUserDataException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -30,7 +29,7 @@ class WhileyPlugin implements Plugin<Project> {
      * required for the compiler classpath.
      */
     public static final List<String> WHILEY_CLASSPATH_LIBS = ['jasm', 'wybs', 'wycc', 'wycs', 'wyc',
-            'wyil', 'wyjc', 'wyrl', 'wyrt']
+            'wyil', 'wyjc', 'wyrl', 'wyrt', 'whiley-all']
     /**
      * A list of the whiley jars that are provided wtihin the Whiley Development Kit that are
      * required for the compiler bootpath.
@@ -94,6 +93,8 @@ class WhileyPlugin implements Plugin<Project> {
                 source whileySourceSet.whiley
                 destinationDir = set.output.classesDir
                 classpath = set.compileClasspath
+
+                whileyOptions.whileydir = project.file("src/$set.name/whiley")
             }
 
             project.tasks.getByName(set.classesTaskName).dependsOn compileTaskName

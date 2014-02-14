@@ -63,6 +63,9 @@ class WhileyCompiler implements Compiler<WhileyCompileSpec> {
         if (options?.wycsdir) {
             buildTask.wycsDir = options.wycsdir
         }
+        if (options?.whileydir) {
+            buildTask.whileyDir = options.whileydir
+        }
 
         spec.source.files.each {
             if (!it.exists()) {
@@ -72,7 +75,7 @@ class WhileyCompiler implements Compiler<WhileyCompileSpec> {
 
         execute(buildTask, spec.source.files as List)
 
-        compileFix(spec)
+        //compileFix(spec)
 
         true as WorkResult
     }
@@ -84,32 +87,7 @@ class WhileyCompiler implements Compiler<WhileyCompileSpec> {
             e.outputSourceError(System.err)
             System.err.println()
 
-            throw new GradleScriptException('Compilation failed; see the lifecycle log output for details', e)
-        }
-    }
-
-    private void compileFix(WhileyCompileSpec spec) {
-        // Hacky fix for the problem explained above...
-        // This forces all source files to be located within a path matching 'src/*/whiley'
-        // and for no file to have a top level package declaration of 'src'
-        def result = project.copy {
-            from("$spec.destinationDir/src/$spec.destinationDir.name/whiley") {
-                include '**/*.class'
-            }
-            into spec.destinationDir
-        }
-
-        if (!result) {
-            throw new InvalidUserDataException("Unable to move source files from " +
-                    "'${project.relativePath(spec.destinationDir)}/src/*/whiley' to " +
-                    "'${project.relativePath(spec.destinationDir)}'")
-        }
-
-        // Delete the src directory
-        result = project.delete("$spec.destinationDir/src")
-
-        if (!result) {
-            logger.warn "Unable to delete directory '{}/src'", project.relativePath(spec.destinationDir)
+            throw new GradleScriptException('Compilation failed; see the compiler error output for details', e)
         }
     }
 }

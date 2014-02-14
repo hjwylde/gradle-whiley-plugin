@@ -10,7 +10,9 @@ import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.TaskAction
 
 /**
- * Compiles whiley source files into class files.
+ * Compiles whiley source files into class files. By default the compile method will use the
+ * compiler packaged with the plugin. If a different compiler version is desired, then it can be
+ * set to a {@link BinaryWhileyCompiler} which sources it from the local WDK.
  *
  * @author Henry J. Wylde
  *
@@ -22,7 +24,6 @@ class WhileyCompile extends SourceTask {
      * The compiler to use for the source code.
      */
     Compiler<WhileyCompileSpec> compiler = new WhileyCompiler(project)
-    //Compiler<WhileyCompileSpec> compiler = new BinaryWhileyCompiler(project)
 
     /**
      * The destination directory for the compiled source code.
