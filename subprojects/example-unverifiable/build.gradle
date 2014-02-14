@@ -1,6 +1,6 @@
 buildscript {
     dependencies {
-        classpath 'com.hjwylde.gradle.plugins.whiley:gradle-whiley-plugin:+'
+        classpath libraries.gradle_whiley_plugin
     }
 }
 
@@ -10,7 +10,7 @@ apply plugin: 'application'
 dependencies {
     compile libraries.wyrt
 
-    runtime libraries.whiley_all
+    runtime libraries.wyjc
 }
 
 mainClassName = 'com.example.HelloWorld'
