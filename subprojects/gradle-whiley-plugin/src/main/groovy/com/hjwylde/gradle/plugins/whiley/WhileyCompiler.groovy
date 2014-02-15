@@ -73,18 +73,18 @@ class WhileyCompiler implements Compiler<WhileyCompileSpec> {
             }
         }
 
-        execute(buildTask, spec.source.files as List)
+        execute(buildTask, spec.source.files as List, options?.brief)
 
         //compileFix(spec)
 
         true as WorkResult
     }
 
-    protected void execute(WyjcBuildTask buildTask, List<File> files) {
+    protected void execute(WyjcBuildTask buildTask, List<File> files, Boolean brief) {
         try {
             buildTask.build(files)
         } catch (SyntaxError e) {
-            e.outputSourceError(System.err, brief)
+            e.outputSourceError(System.err, brief ?: false)
             System.err.println()
 
             throw new GradleScriptException('Compilation failed; see the compiler error output for details', e)

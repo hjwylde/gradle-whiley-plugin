@@ -9,7 +9,7 @@ dependencies {
     compile libraries.whiley_all
 }
 
-defaultTasks 'build', 'install'
+defaultTasks 'build'
 
 signing {
     sign configurations.archives

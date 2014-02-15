@@ -1,7 +1,17 @@
 buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://github.com/hjwylde/maven-repository/raw/master/repository' }
+    }
+
     dependencies {
         classpath libraries.gradle_whiley_plugin
     }
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'https://github.com/hjwylde/maven-repository/raw/master/repository' }
 }
 
 apply plugin: 'whiley'

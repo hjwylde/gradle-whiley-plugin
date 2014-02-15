@@ -15,13 +15,6 @@ allprojects {
 }
 
 subprojects {
-    buildscript {
-        repositories {
-            mavenCentral()
-            maven { url 'https://github.com/hjwylde/maven-repository/raw/master/repository' }
-        }
-    }
-
     repositories {
         mavenCentral()
         maven { url 'https://github.com/hjwylde/maven-repository/raw/master/repository' }
