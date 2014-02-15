@@ -84,7 +84,7 @@ class WhileyCompiler implements Compiler<WhileyCompileSpec> {
         try {
             buildTask.build(files)
         } catch (SyntaxError e) {
-            e.outputSourceError(System.err)
+            e.outputSourceError(System.err, brief)
             System.err.println()
 
             throw new GradleScriptException('Compilation failed; see the compiler error output for details', e)

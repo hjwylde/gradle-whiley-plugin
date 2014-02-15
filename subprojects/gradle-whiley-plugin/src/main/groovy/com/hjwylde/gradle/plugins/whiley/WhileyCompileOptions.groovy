@@ -37,6 +37,11 @@ class WhileyCompileOptions {
     boolean verify
 
     /**
+     * Sets brief reporting of error messages.
+     */
+    boolean brief
+
+    /**
      * The output directory for the <code>wyil</code> intermediary files.
      * <p>
      * Default: <code>null</code>.
