@@ -3,9 +3,6 @@ apply from: 'dependencies.gradle'
 buildscript {
     repositories {
         maven { url 'https://github.com/ben-manes/gradle-versions-plugin/raw/mvnrepo' }
-
-        mavenCentral()
-        mavenLocal()
     }
 
     dependencies {
@@ -21,13 +18,13 @@ subprojects {
     buildscript {
         repositories {
             mavenCentral()
-            mavenLocal()
+            maven { url 'https://github.com/hjwylde/maven-repository/raw/master/repository' }
         }
     }
 
     repositories {
         mavenCentral()
-        mavenLocal()
+        maven { url 'https://github.com/hjwylde/maven-repository/raw/master/repository' }
     }
 
     defaultTasks 'build'
