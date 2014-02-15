@@ -2,7 +2,7 @@ ext {
     libraries = [:]
 }
 
-libraries.gradle_whiley_plugin = "com.hjwylde.gradle.plugins.whiley:gradle-whiley-plugin:$version"
+libraries.gradle_whiley_plugin = "com.hjwylde.gradle.plugins.whiley:gradle-whiley-plugin:0.1.1"
 libraries.groovy_all = 'org.codehaus.groovy:groovy-all:2.2.1'
 libraries.whiley_all = 'whiley:whiley-all:0.+'
 libraries.wyjc = 'whiley:wyjc:0.+'
