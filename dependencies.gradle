@@ -2,9 +2,9 @@ ext {
     libraries = [:]
 }
 
-libraries.gradle_whiley_plugin = 'com.hjwylde.gradle.plugins.whiley:gradle-whiley-plugin:+'
+libraries.gradle_whiley_plugin = 'com.hjwylde.gradle.plugins.whiley:gradle-whiley-plugin:0.1.0'
 libraries.groovy_all = 'org.codehaus.groovy:groovy-all:2.2.1'
-libraries.whiley_all = 'whiley:whiley-all:0.3.21'
-libraries.wyjc = 'whiley:wyjc:0.3.21'
-libraries.wyrt = 'whiley:wyrt:0.3.21'
+libraries.whiley_all = 'whiley:whiley-all:0.+'
+libraries.wyjc = 'whiley:wyjc:0.+'
+libraries.wyrt = 'whiley:wyrt:0.+'
 
