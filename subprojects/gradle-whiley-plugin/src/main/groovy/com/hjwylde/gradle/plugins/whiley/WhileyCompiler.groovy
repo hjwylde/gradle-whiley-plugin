@@ -8,7 +8,7 @@ import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
 import org.gradle.api.tasks.WorkResult
 
-import wybs.lang.SyntaxError
+import wycc.lang.SyntaxError
 import wyjc.util.WyjcBuildTask
 
 /**
@@ -73,18 +73,18 @@ class WhileyCompiler implements Compiler<WhileyCompileSpec> {
             }
         }
 
-        execute(buildTask, spec.source.files as List, options?.brief)
+        execute(buildTask, spec.source.files as List, options?.brief ?: false)
 
         //compileFix(spec)
 
         true as WorkResult
     }
 
-    protected void execute(WyjcBuildTask buildTask, List<File> files, Boolean brief) {
+    protected void execute(WyjcBuildTask buildTask, List<File> files, boolean brief) {
         try {
             buildTask.build(files)
         } catch (SyntaxError e) {
-            e.outputSourceError(System.err, brief ?: false)
+            e.outputSourceError(System.err, brief)
             System.err.println()
 
             throw new GradleScriptException('Compilation failed; see the compiler error output for details', e)
