@@ -1,10 +1,9 @@
 package com.example
 
-import * from whiley.lang.*
-
-void ::main(System.Console sys):
+method main(System.Console sys):
     sys.out.println("Hello World")
 
-int ::getOne() ensures $ == 1:
+function getOne() => int i
+        ensures i == 1:
     return 2
 
