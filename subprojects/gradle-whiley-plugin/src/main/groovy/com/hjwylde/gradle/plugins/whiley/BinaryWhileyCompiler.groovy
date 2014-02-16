@@ -41,8 +41,6 @@ class BinaryWhileyCompiler implements Compiler<WhileyCompileSpec> {
     WorkResult execute(WhileyCompileSpec spec) {
         execute([inferWyjcBinary()] + generateCompilerArgs(spec), spec.verbose)
 
-        //compileFix(spec)
-
         true as WorkResult
     }
 

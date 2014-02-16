@@ -75,8 +75,6 @@ class WhileyCompiler implements Compiler<WhileyCompileSpec> {
 
         execute(buildTask, spec.source.files as List, options?.brief ?: false)
 
-        //compileFix(spec)
-
         true as WorkResult
     }
 
