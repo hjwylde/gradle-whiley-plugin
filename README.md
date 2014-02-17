@@ -104,7 +104,7 @@ To add these files as a dependency to the project:
 
 *NOTE:*
 Currently the WDK files aren't in a central maven repository, so I have included them in my
-personal one. To include the 
+personal one.
 
 ## Source set properties
 
