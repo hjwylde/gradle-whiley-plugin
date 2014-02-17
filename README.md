@@ -1,6 +1,6 @@
 # Gradle Whiley Plugin
 
-This project provides a simple gradle plugin for the [Whiley](https://whiley.org/ "Whiley") language. It works similar to other plugins that compile to the JVM class specification (e.g. Groovy).
+This project provides a simple gradle plugin for the [Whiley](http://whiley.org/ "Whiley") language. It works similar to other plugins that compile to the JVM class specification (e.g. Groovy).
 
 ## Usage
 
