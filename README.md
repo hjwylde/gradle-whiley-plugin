@@ -19,7 +19,7 @@ To use the Whiley plugin, include in your build script:
 
     apply plugin: 'whiley'
 
-The Whiley plugin extends the Java plugin, so you should not include it in the build script.
+The Whiley plugin extends the Java plugin, so you should not apply the Java plugin in the build script.
 
 ## Tasks
 
@@ -69,10 +69,10 @@ Similar to the Java plugin, you can change the project layout by modifying the w
 
 *IMPORTANT*:
 Currently due to the way the Whiley compiler works, changing the project layout for the Whiley
-source files will break the compilation script as some strings are hardcoded in. See issue #{TODO}
+source files will break the compilation script as some strings are hardcoded in. See [issue #3](https://github.com/hjwylde/gradle-whiley-plugin/issues/3 "Source Set Directories").
 
 *NOTE*:
-Currently compiling Whiley source files from another source set causes an error. See issue #{TODO}
+Currently compiling Whiley source files from another source set causes an error. See [issue #4](https://github.com/hjwylde/gradle-whiley-plugin/issues/4 "Source Set Compilation Error").
 
 ## Dependency management
 

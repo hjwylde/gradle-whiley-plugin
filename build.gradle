@@ -17,6 +17,7 @@ allprojects {
 subprojects {
     repositories {
         mavenCentral()
+
         maven { url 'https://github.com/hjwylde/maven-repository/raw/master/repository' }
     }
 
