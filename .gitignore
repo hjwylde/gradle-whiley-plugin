@@ -15,6 +15,3 @@ build/
 bin/
 gen/
 
-# Local maven repository
-repo/
-
