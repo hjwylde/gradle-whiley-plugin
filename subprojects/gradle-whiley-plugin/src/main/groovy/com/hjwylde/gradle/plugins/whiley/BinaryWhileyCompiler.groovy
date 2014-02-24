@@ -51,17 +51,20 @@ class BinaryWhileyCompiler implements Compiler<WhileyCompileSpec> {
         // Currently they are placed in their entire path relative from the working directory,
         // unlike Java where it places it in a path based only on the package delcaration
         def proc = commandLine.execute()
-        // TODO: This doesn't actually process each line as it happens, it only outputs the lot
-        // once the process is complete
-        proc.in.eachLine {
-            if (it) {
+
+        Thread.start {
+            proc.in.eachLine {
                 if (verbose) {
                     logger.lifecycle it
                 } else {
                     logger.info it
                 }
             }
+            proc.err.eachLine {
+                logger.error it
+            }
         }
+
         proc.waitFor()
 
         logger.info "wyjc result: {}", proc.exitValue()

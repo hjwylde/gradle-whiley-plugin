@@ -29,7 +29,7 @@ mainClassName = 'com.example.HelloWorld'
 compileWhiley {
     //compiler = new com.hjwylde.gradle.plugins.whiley.BinaryWhileyCompiler(project)
 
-    //whileyOptions.verbose = true
+    whileyOptions.verbose = true
     whileyOptions.verify = true
 }
 
