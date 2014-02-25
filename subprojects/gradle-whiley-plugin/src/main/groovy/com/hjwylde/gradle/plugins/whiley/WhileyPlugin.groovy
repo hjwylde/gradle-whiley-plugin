@@ -6,6 +6,7 @@ import org.gradle.api.InvalidUserDataException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.internal.file.FileResolver
+import org.gradle.api.internal.file.collections.LazilyInitializedFileCollection
 import org.gradle.api.file.FileCollection
 import org.gradle.api.plugins.JavaPlugin
 
@@ -106,14 +107,15 @@ class WhileyPlugin implements Plugin<Project> {
      * @return the inferred bootpath.
      */
     private FileCollection inferWhileyBootpath(FileCollection classpath) {
-        // TODO: Fix me... This doesn't actually filter the file collection
-        project.files(classpath) {
-            filter { path ->
-                WHILEY_BOOTPATH_LIBS.any {
-                    path.name.startsWith it
-                }
+        return [
+            createDelegate: { project.files(
+                    classpath.findAll { path ->
+                        WHILEY_BOOTPATH_LIBS.any {
+                            path.name.startsWith it
+                        }
+                    })
             }
-        }
+        ] as LazilyInitializedFileCollection
     }
 }
 
