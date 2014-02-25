@@ -21,6 +21,19 @@ To use the Whiley plugin, include in your build script:
 
 The Whiley plugin extends the Java plugin, so you should not apply the Java plugin in the build script.
 
+### Example usage
+
+Two example projects are included in the repository.
+
+* [Example 01 - Verifiable](https://github.com/hjwylde/gradle-whiley-plugin/tree/master/subprojects/example-verifiable "Example 01 - Verifiable")
+* [Example 02 - Unverifiable](https://github.com/hjwylde/gradle-whiley-plugin/tree/master/subprojects/example-unverifiable "Example 01 - Unverifiable")
+
+These examples show the exact build script needed to use the plugin and a few ways of customising the compile options.
+
+### Running the examples
+
+Because the Whiley language compiles to Java Bytecode, the plugin can be combined with other Java compatible plugins like [application](http://www.gradle.org/docs/current/userguide/application_plugin.html "The Application Plugin"). Simply use the plugin like you would and call the _run_ task from Gradle (execute _gradle run_ in the terminal, or _gradlew :example-verifiable:run_ from the root project if all you're doing is cloning this repository).
+
 ## Tasks
 
 The Whiley plugin adds the following tasks to the project:
@@ -105,19 +118,6 @@ To add these files as a dependency to the project:
 *NOTE:*
 Currently the WDK files aren't in a central maven repository, so I have included them in my
 personal one.
-
-## Examples
-
-Two example projects are included in the repository.
-
-* [Example 01 - Verifiable](https://github.com/hjwylde/gradle-whiley-plugin/tree/master/subprojects/example-verifiable "Example 01 - Verifiable")
-* [Example 02 - Unverifiable](https://github.com/hjwylde/gradle-whiley-plugin/tree/master/subprojects/example-unverifiable "Example 01 - Unverifiable")
-
-These examples show the exact build script needed to use the plugin and a few ways of customising the compile options.
-
-### Running the example
-
-Because the Whiley language compiles to Java Bytecode, the plugin can be combined with other Java compatible plugins like [application](http://www.gradle.org/docs/current/userguide/application_plugin.html "The Application Plugin"). Simply use the plugin like you would and call the _run_ task from Gradle (execute _gradle run_ in the terminal, or _gradlew :example-verifiable:run_ from the root project if all you're doing is cloning this repository).
 
 ## Source set properties
 
