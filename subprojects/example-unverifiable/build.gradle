@@ -1,12 +1,11 @@
 buildscript {
     repositories {
         mavenCentral()
-        mavenLocal()
-        //maven { url 'https://github.com/hjwylde/maven-repository/raw/master/repository' }
+        maven { url 'https://github.com/hjwylde/maven-repository/raw/master/repository' }
     }
 
     dependencies {
-        classpath libraries.gradle_whiley_plugin
+        classpath 'com.hjwylde.gradle.plugins.whiley:gradle-whiley-plugin:0.1.5'
     }
 }
 
@@ -19,9 +18,9 @@ apply plugin: 'whiley'
 apply plugin: 'application'
 
 dependencies {
-    compile libraries.wyrt
+    compile 'whiley:wyrt:0.3.22'
 
-    runtime libraries.wyjc
+    runtime 'whiley:wyjc:0.3.22'
 }
 
 mainClassName = 'com.example.HelloWorld'
@@ -31,5 +30,10 @@ compileWhiley {
 
     whileyOptions.verbose = true
     whileyOptions.verify = true
+
+    // The Whiley compiler will only write out these files if verify is set to true
+    // wyildir = file(...)
+    // wyaldir = file(...)
+    // wycsdir = file(...)
 }
 
