@@ -37,7 +37,7 @@ Task name|Depends on
 ---------|----------
 classes|compileWhiley
 testClasses|compileTestWhiley
-sourceSetClasses|compileSourceSetWhiley
+_sourceSet_Classes|compile_SourceSet_Whiley
 
 ## Project layout
 
@@ -51,9 +51,9 @@ src/main/whiley|Production Whiley source
 src/test/java|Test Java source
 src/test/resources|Test resources
 src/test/whiley|Test Whiley source
-src/sourceSet/java|Java source for the given source set
-src/sourceSet/resources|Resources for the given source set
-src/sourceSet/whiley|Whiley source for the given source set
+src/_sourceSet_/java|Java source for the given source set
+src/_sourceSet_/resources|Resources for the given source set
+src/_sourceSet_/whiley|Whiley source for the given source set
 
 ### Changing the project layout
 
