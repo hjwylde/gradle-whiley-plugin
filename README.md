@@ -37,7 +37,7 @@ Task name|Depends on
 ---------|----------
 classes|compileWhiley
 testClasses|compileTestWhiley
-_sourceSet_Classes|compile_SourceSet_Whiley
+_sourceSet_Classes|compileSourceSetWhiley
 
 ## Project layout
 
