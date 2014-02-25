@@ -1,6 +1,7 @@
 apply plugin: 'groovy'
 apply plugin: 'signing'
 apply plugin: 'maven'
+//apply plugin: 'maven-publish'
 
 dependencies {
     compile gradleApi()
@@ -11,7 +12,7 @@ dependencies {
 
 defaultTasks 'build'
 
-task sourcesJar(type: Jar) {
+task sourceJar(type: Jar) {
     classifier = 'sources'
     from sourceSets.main.allSource
 }
@@ -24,7 +25,7 @@ task groovydocJar(type: Jar, dependsOn: groovydoc) {
 artifacts {
     archives jar
 
-    archives sourcesJar
+    archives sourceJar
     archives groovydocJar
 }
 
@@ -43,4 +44,21 @@ uploadArchives {
         }
     }
 }
+
+//publishing {
+//    repositories {
+//        maven {
+//            url '/home/hjwylde/git/maven-repository/repository'
+//        }
+//    }
+//
+//    publications {
+//        mavenJava(MavenPublication) {
+//            from components.java
+//
+//            artifact sourceJar
+//            artifact groovydocJar
+//        }
+//    }
+//}
 
