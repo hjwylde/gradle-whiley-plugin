@@ -11,6 +11,23 @@ dependencies {
 
 defaultTasks 'build'
 
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task groovydocJar(type: Jar, dependsOn: groovydoc) {
+    classifier = 'groovydoc'
+    from groovydoc.destinationDir
+}
+
+artifacts {
+    archives jar
+
+    archives sourcesJar
+    archives groovydocJar
+}
+
 signing {
     sign configurations.archives
 }
