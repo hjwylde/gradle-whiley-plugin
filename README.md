@@ -70,7 +70,7 @@ src/_sourceSet_/whiley|Whiley source for the given source set
 
 ### Changing the project layout
 
-Similar to the Java plugin, you can change the project layout by modifying the whiley source set container
+Similar to the Java plugin, you can change the project layout by modifying the whiley source set container:
 
     sourceSets {
         main {
@@ -78,14 +78,17 @@ Similar to the Java plugin, you can change the project layout by modifying the w
                 srcDirs = ['src/whiley']
             }
         }
+
+        foo {
+            whiley {
+                srcDir 'src/whiley'
+            }
+        }
     }
 
 *IMPORTANT*:
 Currently due to the way the Whiley compiler works, changing the project layout for the Whiley
 source files will break the compilation script as some strings are hardcoded in. See [issue #3](https://github.com/hjwylde/gradle-whiley-plugin/issues/3 "Source Set Directories").
-
-*NOTE*:
-Currently compiling Whiley source files from another source set causes an error. See [issue #4](https://github.com/hjwylde/gradle-whiley-plugin/issues/4 "Source Set Compilation Error").
 
 ## Dependency management
 
