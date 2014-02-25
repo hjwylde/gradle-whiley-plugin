@@ -36,10 +36,10 @@ class WhileyCompile extends SourceTask {
      */
     @InputFiles
     FileCollection classpath
+
     /**
      * The bootpath to use during compilation.
      */
-    @InputFiles
     FileCollection bootpath
 
     /**
@@ -53,6 +53,10 @@ class WhileyCompile extends SourceTask {
      */
     @TaskAction
     protected void compile() {
+        if (!bootpath) {
+            throw new InvalidUserDataException("${name}.bootpath cannot be null or empty; the bootpath is implicitely implied from the classpath, please make sure a wyrt-v*.jar is included in the classpath")
+        }
+
         def spec = new EmptyWhileyCompileSpec(
                 whileyCompileOptions: whileyOptions,
                 source: source,

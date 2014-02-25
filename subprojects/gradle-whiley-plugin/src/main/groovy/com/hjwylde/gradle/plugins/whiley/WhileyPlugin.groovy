@@ -9,8 +9,6 @@ import org.gradle.api.internal.file.FileResolver
 import org.gradle.api.file.FileCollection
 import org.gradle.api.plugins.JavaPlugin
 
-import wyjc.WyjcMain
-
 import javax.inject.Inject
 
 
@@ -57,10 +55,9 @@ class WhileyPlugin implements Plugin<Project> {
     void apply(Project project) {
         this.project = project
 
-        project.plugins.apply(JavaPlugin.class)
+        project.plugins.apply(JavaPlugin)
 
         configureSourceSets()
-        configureCompileDefaults()
     }
 
     /**
@@ -88,26 +85,17 @@ class WhileyPlugin implements Plugin<Project> {
             // Create the compile task for this source set
             def compileTaskName = set.getCompileTaskName('whiley')
             project.task(compileTaskName, type: WhileyCompile) {
-                description "Compiles Whiley source '$set.whiley:whiley'."
+                description "Compiles Whiley source '$set.name:whiley'."
 
                 source whileySourceSet.whiley
                 destinationDir = set.output.classesDir
                 classpath = set.compileClasspath
+                bootpath = inferWhileyBootpath(set.compileClasspath)
 
                 whileyOptions.whileydir = project.file("src/$set.name/whiley")
             }
 
             project.tasks.getByName(set.classesTaskName).dependsOn compileTaskName
-        }
-    }
-
-    /**
-     * Configures the compiile task defaults. This simply adds an inferred bootpath to all of the
-     * {@link WhileyCompile} tasks in the project.
-     */
-    private void configureCompileDefaults() {
-        project.tasks.withType(WhileyCompile) {
-            it.bootpath = inferWhileyBootpath(it.classpath)
         }
     }
 

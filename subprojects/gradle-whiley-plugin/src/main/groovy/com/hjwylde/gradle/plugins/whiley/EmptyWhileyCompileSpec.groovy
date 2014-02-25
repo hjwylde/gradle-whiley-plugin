@@ -36,6 +36,12 @@ class EmptyWhileyCompileSpec implements WhileyCompileSpec {
      */
     FileCollection bootpath
 
+    void setWhileyCompileOptions(WhileyCompileOptions whileyCompileOptions) {
+        assert whileyCompileOptions != null, 'whileyCompileOptions cannot be null'
+
+        this.whileyCompileOptions = whileyCompileOptions;
+    }
+
     /**
      * {@inheritDoc}
      */
