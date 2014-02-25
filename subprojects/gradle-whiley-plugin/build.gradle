@@ -18,7 +18,7 @@ task sourceJar(type: Jar) {
 }
 
 task groovydocJar(type: Jar, dependsOn: groovydoc) {
-    classifier = 'groovydoc'
+    classifier = 'javadoc'
     from groovydoc.destinationDir
 }
 
@@ -40,6 +40,27 @@ uploadArchives {
 
             beforeDeployment {
                 MavenDeployment deployment -> signing.signPom(deployment)
+            }
+
+            pom.project {
+                name 'Gradle Whiley Plugin'
+                description 'Gradle plugin for the Whiley language'
+                url 'https://github.com/hjwylde/gradle-whiley-plugin'
+
+                licenses {
+                    license {
+                        name 'The BSD 3-Clause License'
+                        url 'http://opensource.org/licenses/BSD-3-Clause'
+                        distribution 'repo'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'hjwylde'
+                        name 'Henry J. Wylde'
+                    }
+                }
             }
         }
     }
