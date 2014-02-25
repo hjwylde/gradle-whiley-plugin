@@ -117,7 +117,7 @@ These examples show the exact build script needed to use the plugin and a few wa
 
 ### Running the example
 
-Because the Whiley language compiles to Java Bytecode, the plugin can be combined with other Java compatible plugins like '[application](http://www.gradle.org/docs/current/userguide/application_plugin.html "The Application Plugin")'. Simply use the plugin like you would and call the 'run' task from Gradle (execute '_gradle run_' in the commandline, or '_gradlew :example-verifiable:run_' from the root project if all you're doing is cloning this repository).
+Because the Whiley language compiles to Java Bytecode, the plugin can be combined with other Java compatible plugins like [application](http://www.gradle.org/docs/current/userguide/application_plugin.html "The Application Plugin"). Simply use the plugin like you would and call the _run_ task from Gradle (execute _gradle run_ in the terminal, or _gradlew :example-verifiable:run_ from the root project if all you're doing is cloning this repository).
 
 ## Source set properties
 
