@@ -60,6 +60,8 @@ class BinaryWhileyCompiler implements Compiler<WhileyCompileSpec> {
                     logger.info it
                 }
             }
+        }
+        Thread.start {
             proc.err.eachLine {
                 logger.error it
             }
