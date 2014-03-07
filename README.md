@@ -87,24 +87,18 @@ Similar to the Java plugin, you can change the project layout by modifying the w
     }
 
 *IMPORTANT*:
-Currently due to the way the Whiley compiler works, changing the project layout for the Whiley
-source files will break the compilation script as some strings are hardcoded in. See [issue #3](https://github.com/hjwylde/gradle-whiley-plugin/issues/3 "Source Set Directories").
+Currently due to the way the Whiley compiler works, changing the project layout for the Whiley source files will break the compilation script as some strings are hardcoded in. See [issue #3](https://github.com/hjwylde/gradle-whiley-plugin/issues/3 "Source Set Directories").
 
 ## Dependency management
 
-The plugin depends on the Whiley Development Kit (WDK) files in order to be able to compile the
-source files. It will always try to use the latest WDK version through a variable dependency.
-Therefore, if you have included the WDK as a dependency and changed the Gradle transitive
-dependency management settings then you can force the plugin to compile with a different WDK
-version.
+The plugin depends on the Whiley Development Kit (WDK) files in order to be able to compile the source files. It will attempt to infer both the bootpath (whiley runtime files) and the whiley classpath (classpath to search for the compiler) based on the compile time dependencies. The inference is done by searching for an artifact with the name of _whiley-all_. It is a requirement that neither of these paths are empty, so it is recommended to add it in as described in the following section.
 
 This plugin has been tested with the following WDK versions:
 * v0.3.22
 
 ### Adding the WDK dependency
 
-All Whiley projects need to be compiled with the Whiley Runtime Environment and require the Whiley
-Java Compiler files to run.
+All Whiley projects need to be compiled with the Whiley Runtime Environment and require the Whiley Java Compiler files to run.
 
 To add these files as a dependency to the project:
 
@@ -113,14 +107,11 @@ To add these files as a dependency to the project:
     }
 
     dependencies {
-        compile 'whiley:wyrt:0.3.22'
-
-        runtime 'whiley:wyjc:0.3.22'
+        compile 'whiley:whiley-all:0.3.22'
     }
 
 *NOTE:*
-Currently the WDK files aren't in a central maven repository, so I have included them in my
-personal one.
+Currently the WDK files aren't in a central maven repository, so I have included them in my personal one.
 
 ## Source set properties
 
