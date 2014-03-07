@@ -1,4 +1,4 @@
-package com.hjwylde.gradle.plugins.whiley
+package com.hjwylde.gradle.plugins.whiley.compile
 
 import org.gradle.api.Incubating
 import org.gradle.api.tasks.Input
@@ -15,8 +15,7 @@ import org.gradle.api.tasks.OutputDirectory
  * development kit.
  *
  * @author Henry J. Wylde
- *
- * @since 1.0.0, 12/02/2014
+ * @since 0.1.0
  */
 class WhileyCompileOptions {
 
@@ -35,11 +34,6 @@ class WhileyCompileOptions {
      */
     @Input
     boolean verify
-
-    /**
-     * Sets brief reporting of error messages.
-     */
-    boolean brief
 
     /**
      * The output directory for the <code>wyil</code> intermediary files.
@@ -67,16 +61,21 @@ class WhileyCompileOptions {
     @Optional
     @OutputDirectory
     File wycsdir
-
     /**
      * The base directory for whiley source files. This method is temporary while the compiler does
-     * not support files from more than one base directory.
+     * not support files from more than one base directory. It is not recommended to manually set
+     * this field.
      */
     @Incubating
     @Optional
     @InputDirectory
     File whileydir
 
-    // TODO: Add in ability to choose the pipeline options
+    /**
+     * A list of extra compiler arguments to pass to the compiler.
+     */
+    @Optional
+    @Input
+    List<String> compilerArgs
 }
 

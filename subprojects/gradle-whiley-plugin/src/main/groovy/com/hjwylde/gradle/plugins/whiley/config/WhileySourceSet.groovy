@@ -1,4 +1,4 @@
-package com.hjwylde.gradle.plugins.whiley
+package com.hjwylde.gradle.plugins.whiley.config
 
 import org.gradle.api.file.SourceDirectorySet
 
@@ -7,8 +7,7 @@ import org.gradle.api.file.SourceDirectorySet
  * source sets.
  *
  * @author Henry J. Wylde
- *
- * @since 1.0.0, 12/02/2014
+ * @since 0.1.0
  */
 interface WhileySourceSet {
 

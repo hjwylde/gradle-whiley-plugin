@@ -1,4 +1,4 @@
-package com.hjwylde.gradle.plugins.whiley
+package com.hjwylde.gradle.plugins.whiley.compile
 
 import org.gradle.api.file.FileCollection
 
@@ -9,8 +9,7 @@ import org.gradle.api.file.FileCollection
  * Every field is initialised to null and should be overwritten.
  *
  * @author Henry J. Wylde
- *
- * @since 1.0.0, 12/02/2014
+ * @since 0.1.0
  */
 class EmptyWhileyCompileSpec implements WhileyCompileSpec {
 
@@ -28,16 +27,28 @@ class EmptyWhileyCompileSpec implements WhileyCompileSpec {
      */
     File destinationDir
     /**
-     * The classpath to use when compiling the source files.
+     * The classpath to use when compiling the source files. The classpath should contain the
+     * necessary referenced files by the source.
      */
     FileCollection classpath
     /**
-     * The bootpath to use with the compiler. (Should contain the wyrt-v*.jar file.)
+     * The bootpath to use when compiling the source files. The bootpath should contain the whiley
+     * runtime files, i.e. a {@code whiley-all} or {@code wyrt} artifact.
      */
     FileCollection bootpath
+    /**
+     * The whiley classpath to use. The whiley classpath is the path that contains the whiley
+     * compiler files, i.e. a {@code whiley-all} artifact.
+     */
+    FileCollection whileyClasspath
 
+    /**
+     * Sets the whiley compile options to the given options.
+     *
+     * @param whileyCompileOptions the new options.
+     */
     void setWhileyCompileOptions(WhileyCompileOptions whileyCompileOptions) {
-        assert whileyCompileOptions != null, 'whileyCompileOptions cannot be null'
+        assert whileyCompileOptions, 'whileyCompileOptions cannot be null'
 
         this.whileyCompileOptions = whileyCompileOptions;
     }
@@ -57,7 +68,7 @@ class EmptyWhileyCompileSpec implements WhileyCompileSpec {
      */
     @Override
     void setDestinationDir(File destinationDir) {
-        assert destinationDir != null, 'destinationDir cannot be null'
+        assert destinationDir, 'destinationDir cannot be null'
 
         this.destinationDir = destinationDir;
     }
@@ -80,6 +91,16 @@ class EmptyWhileyCompileSpec implements WhileyCompileSpec {
         assert bootpath != null, 'bootpath cannot be null'
 
         this.bootpath = bootpath;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    void setWhileyClasspath(FileCollection whileyClasspath) {
+        assert whileyClasspath != null, 'whileyClasspath cannot be null'
+
+        this.whileyClasspath = whileyClasspath;
     }
 }
 

@@ -2,12 +2,15 @@ package com.hjwylde.gradle.plugins.whiley
 
 import static org.gradle.api.tasks.SourceSet.MAIN_SOURCE_SET_NAME
 
+import com.hjwylde.gradle.plugins.whiley.compile.WhileyCompile
+import com.hjwylde.gradle.plugins.whiley.config.DefaultWhileySourceSet
+import com.hjwylde.gradle.plugins.whiley.config.WhileyRuntime
+import com.hjwylde.gradle.plugins.whiley.config.WhileySourceSet
+
 import org.gradle.api.InvalidUserDataException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.internal.file.FileResolver
-import org.gradle.api.internal.file.collections.LazilyInitializedFileCollection
-import org.gradle.api.file.FileCollection
 import org.gradle.api.plugins.JavaPlugin
 
 import javax.inject.Inject
@@ -18,22 +21,9 @@ import javax.inject.Inject
  * {@link WhileyCompile} tasks to each source set.
  *
  * @author Henry J. Wylde
- *
- * @since 1.0.0, 05/02/2014
+ * @since 0.1.0
  */
 class WhileyPlugin implements Plugin<Project> {
-
-    /**
-     * A list of the whiley jars that are provided within the Whiley Development Kit that are
-     * required for the compiler classpath.
-     */
-    public static final List<String> WHILEY_CLASSPATH_LIBS = ['jasm', 'wybs', 'wycc', 'wycs', 'wyc',
-            'wyil', 'wyjc', 'wyrl', 'wyrt', 'whiley-all']
-    /**
-     * A list of the whiley jars that are provided wtihin the Whiley Development Kit that are
-     * required for the compiler bootpath.
-     */
-    public static final List<String> WHILEY_BOOTPATH_LIBS = ['wyrt']
 
     protected Project project
 
@@ -46,6 +36,8 @@ class WhileyPlugin implements Plugin<Project> {
      */
     @Inject
     WhileyPlugin(FileResolver fileResolver) {
+        assert fileResolver, 'fileResolver cannot be null'
+
         this.fileResolver = fileResolver
     }
 
@@ -54,6 +46,8 @@ class WhileyPlugin implements Plugin<Project> {
      */
     @Override
     void apply(Project project) {
+        assert project, 'project cannot be null'
+
         this.project = project
 
         project.plugins.apply(JavaPlugin)
@@ -71,6 +65,8 @@ class WhileyPlugin implements Plugin<Project> {
      * </ul>
      */
     private void configureSourceSets() {
+        def whileyRuntime = new WhileyRuntime(project)
+
         project.sourceSets.all { set ->
             // Set up the default Whiley source set and add to the default source sets
             WhileySourceSet whileySourceSet = new DefaultWhileySourceSet(
@@ -91,31 +87,14 @@ class WhileyPlugin implements Plugin<Project> {
                 source whileySourceSet.whiley
                 destinationDir = set.output.classesDir
                 classpath = set.compileClasspath
-                bootpath = inferWhileyBootpath(set.compileClasspath)
+                bootpath = whileyRuntime.inferWhileyBootpath(set.runtimeClasspath)
+                whileyClasspath = whileyRuntime.inferWhileyClasspath(set.compileClasspath)
 
                 whileyOptions.whileydir = project.file("src/$set.name/whiley")
             }
 
             project.tasks.getByName(set.classesTaskName).dependsOn compileTaskName
         }
-    }
-
-    /**
-     * Attempts to infer the bootpath for compilation using the given classpath list.
-     *
-     * @param classpath the classpath to use to infer the bootpath.
-     * @return the inferred bootpath.
-     */
-    private FileCollection inferWhileyBootpath(FileCollection classpath) {
-        return [
-            createDelegate: { project.files(
-                    classpath.findAll { path ->
-                        WHILEY_BOOTPATH_LIBS.any {
-                            path.name.startsWith it
-                        }
-                    })
-            }
-        ] as LazilyInitializedFileCollection
     }
 }
 

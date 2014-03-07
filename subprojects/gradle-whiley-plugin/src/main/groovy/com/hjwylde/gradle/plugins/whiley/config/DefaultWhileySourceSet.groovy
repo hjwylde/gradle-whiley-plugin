@@ -1,4 +1,4 @@
-package com.hjwylde.gradle.plugins.whiley
+package com.hjwylde.gradle.plugins.whiley.config
 
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.internal.file.DefaultSourceDirectorySet
@@ -10,8 +10,7 @@ import org.gradle.util.ConfigureUtil
  * configurations as {@link SourceDirectorySet}s and initialises them with the necessary filters.
  *
  * @author Henry J. Wylde
- *
- * @since 1.0.0, 12/02/2014
+ * @since 0.1.0
  */
 class DefaultWhileySourceSet implements WhileySourceSet {
 

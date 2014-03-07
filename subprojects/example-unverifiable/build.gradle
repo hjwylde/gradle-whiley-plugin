@@ -26,14 +26,12 @@ dependencies {
 mainClassName = 'com.example.HelloWorld'
 
 compileWhiley {
-    //compiler = new com.hjwylde.gradle.plugins.whiley.BinaryWhileyCompiler(project)
-
     whileyOptions.verbose = true
     whileyOptions.verify = true
 
     // The Whiley compiler will only write out these files if verify is set to true
-    // wyildir = file(...)
-    // wyaldir = file(...)
-    // wycsdir = file(...)
+    // whileyOptions.wyildir = file(...)
+    // whileyOptions.wyaldir = file(...)
+    // whileyOptions.wycsdir = file(...)
 }
 

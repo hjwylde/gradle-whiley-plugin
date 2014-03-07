@@ -1,4 +1,4 @@
-package com.hjwylde.gradle.plugins.whiley
+package com.hjwylde.gradle.plugins.whiley.compile
 
 import org.gradle.api.internal.tasks.compile.CompileSpec
 import org.gradle.api.file.FileCollection
@@ -8,8 +8,7 @@ import org.gradle.api.file.FileCollection
  * whiley source files.
  *
  * @author Henry J. Wylde
- *
- * @since 1.0.0, 12/02/2014
+ * @since 0.1.0
  */
 interface WhileyCompileSpec extends CompileSpec {
 
@@ -65,17 +64,35 @@ interface WhileyCompileSpec extends CompileSpec {
     void setClasspath(FileCollection classpath)
 
     /**
-     * Gets the bootpath to use during compilation.
+     * Gets the bootpath to use during compilation. The bootpath should contain the whiley runtime
+     * files, i.e. a {@code whiley-all} or {@code wyrt} artifact.
      *
      * @return the compilation bootpath.
      */
     FileCollection getBootpath()
 
     /**
-     * Sets the bootpath to use during compilation.
+     * Sets the bootpath to use during compilation. The bootpath should contain the whiley runtime
+     * files, i.e. a {@code whiley-all} or {@code wyrt} artifact.
      *
      * @param bootpath the bootpath.
      */
     void setBootpath(FileCollection bootpath)
+
+     /**
+      * Gets the Whiley classpath to use during compilation. The Whiley classpath is the path that
+      * the compiler is loaded from. It should include a {@code whiley-all} artifact.
+      *
+      * @return the Whiley classpath.
+      */
+     FileCollection getWhileyClasspath()
+
+     /**
+      * Sets the Whiley classpath to use during compilation. The Whiley classpath is the path that
+      * the compiler is loaded from. It should include a {@code whiley-all} artifact.
+      *
+      * @param whileyClasspath the Whiley classpath.
+      */
+     void setWhileyClasspath(FileCollection whileyClasspath)
 }
 
