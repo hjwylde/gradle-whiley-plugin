@@ -98,9 +98,9 @@ This plugin has been tested with the following WDK versions:
 
 ### Adding the WDK dependency
 
-All Whiley projects need to be compiled with the Whiley Runtime Environment and require the Whiley Java Compiler files to run.
+All Whiley projects need to be compiled with the Whiley Runtime Environment and require the Whiley Java Compiler files to run. The compiler requires the whole Whiley Development Kit, which includes the runtime environment and Java compiler.
 
-To add these files as a dependency to the project:
+To add the Whiley Development Kit (whiley-all) as a dependency to the project:
 
     repositories {
         maven { url 'https://github.com/hjwylde/maven-repository/raw/master/repository' }
