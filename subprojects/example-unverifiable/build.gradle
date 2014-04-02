@@ -18,9 +18,7 @@ apply plugin: 'whiley'
 apply plugin: 'application'
 
 dependencies {
-    compile 'whiley:wyrt:0.3.22'
-
-    runtime 'whiley:wyjc:0.3.22'
+    compile 'whiley:whiley-all:0.3.23'
 }
 
 mainClassName = 'com.example.HelloWorld'
