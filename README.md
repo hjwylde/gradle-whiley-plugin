@@ -96,6 +96,7 @@ The plugin depends on the Whiley Development Kit (WDK) files in order to be able
 This plugin has been tested with the following WDK versions:
 * v0.3.22
 * v0.3.23
+* v0.3.24
 
 ### Adding the WDK dependency
 
