@@ -5,7 +5,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.hjwylde.gradle.plugins.whiley:gradle-whiley-plugin:0.1.6'
+        classpath 'com.hjwylde.gradle.plugins.whiley:gradle-whiley-plugin:0.1.8'
     }
 }
 
@@ -17,7 +17,7 @@ apply plugin: 'whiley'
 apply plugin: 'application'
 
 dependencies {
-    compile 'whiley:whiley-all:0.3.22'
+    compile 'whiley:whiley-all:0.3.25'
 }
 
 mainClassName = 'com.example.HelloWorld'

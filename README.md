@@ -42,7 +42,7 @@ Task name|Depends on|Type|Description
 ---------|----------|----|-----------
 compileWhiley|-|WhileyCompile|Compiles production Whiley source files.
 compileTestWhiley|-|WhileyCompile|Compiles test Whiley source files.
-compileSourceSetWhiley|-|WhileyCompile|Compiles the given source set's Whiley source files.
+compile<i>SourceSet</i>Whiley|-|WhileyCompile|Compiles the given source set's Whiley source files.
 
 As well as adding in the tasks, the plugin also adds in the following dependencies:
 
@@ -50,7 +50,7 @@ Task name|Depends on
 ---------|----------
 classes|compileWhiley
 testClasses|compileTestWhiley
-_sourceSet_Classes|compileSourceSetWhiley
+<i>sourceSet</i>Classes|compile<i>SourceSet</i>Whiley
 
 ## Project layout
 
@@ -95,6 +95,9 @@ The plugin depends on the Whiley Development Kit (WDK) files in order to be able
 
 This plugin has been tested with the following WDK versions:
 * v0.3.22
+* v0.3.23
+* v0.3.24
+* v0.3.25
 
 ### Adding the WDK dependency
 
@@ -107,7 +110,7 @@ To add the Whiley Development Kit (whiley-all) as a dependency to the project:
     }
 
     dependencies {
-        compile 'whiley:whiley-all:0.3.22'
+        compile 'whiley:whiley-all:0.3.23'
     }
 
 *NOTE:*
