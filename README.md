@@ -97,6 +97,7 @@ This plugin has been tested with the following WDK versions:
 * v0.3.22
 * v0.3.23
 * v0.3.24
+* v0.3.25
 
 ### Adding the WDK dependency
 
