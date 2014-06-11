@@ -5,7 +5,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.hjwylde.gradle.plugins.whiley:gradle-whiley-plugin:0.1.6'
+        classpath 'com.hjwylde.gradle.plugins.whiley:gradle-whiley-plugin:0.1.8'
     }
 }
 
