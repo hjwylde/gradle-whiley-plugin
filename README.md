@@ -1,6 +1,7 @@
 # Gradle Whiley Plugin
 
-This project provides a simple gradle plugin for the [Whiley](http://whiley.org/ "Whiley") language. It works similar to other plugins that compile to the JVM class specification (e.g. Groovy).
+This project provides a simple gradle plugin for the [Whiley](http://whiley.org/ "Whiley") language.
+It works similar to other plugins that compile to the JVM class specification (e.g. Groovy).
 
 ## Usage
 
@@ -32,7 +33,8 @@ These examples show the exact build script needed to use the plugin and a few wa
 
 ### Running the examples
 
-Because the Whiley language compiles to Java Bytecode, the plugin can be combined with other Java compatible plugins like [application](http://www.gradle.org/docs/current/userguide/application_plugin.html "The Application Plugin"). Simply use the plugin like you would and call the _run_ task from Gradle (execute _gradle run_ in the terminal, or _gradlew :example-verifiable:run_ from the root project if all you're doing is cloning this repository).
+Because the Whiley language compiles to Java Bytecode, the plugin can be combined with other Java compatible plugins like [application](http://www.gradle.org/docs/current/userguide/application_plugin.html "The Application Plugin").
+Simply use the plugin like you would and call the _run_ task from Gradle (execute _gradle run_ in the terminal, or _gradlew :example-verifiable:run_ from the root project if all you're doing is cloning this repository).
 
 ## Tasks
 
@@ -87,11 +89,15 @@ Similar to the Java plugin, you can change the project layout by modifying the w
     }
 
 *IMPORTANT*:
-Currently due to the way the Whiley compiler works, changing the project layout for the Whiley source files will break the compilation script as some strings are hardcoded in. See [issue #3](https://github.com/hjwylde/gradle-whiley-plugin/issues/3 "Source Set Directories").
+Currently due to the way the Whiley compiler works, changing the project layout for the Whiley source files will break the compilation script as some strings are hardcoded in.
+See [issue #3](https://github.com/hjwylde/gradle-whiley-plugin/issues/3 "Source Set Directories").
 
 ## Dependency management
 
-The plugin depends on the Whiley Development Kit (WDK) files in order to be able to compile the source files. It will attempt to infer both the bootpath (whiley runtime files) and the whiley classpath (classpath to search for the compiler) based on the compile time dependencies. The inference is done by searching for an artifact with the name of _whiley-all_. It is a requirement that neither of these paths are empty, so it is recommended to add it in as described in the following section.
+The plugin depends on the Whiley Development Kit (WDK) files in order to be able to compile the source files.
+It will attempt to infer both the bootpath (whiley runtime files) and the whiley classpath (classpath to search for the compiler) based on the compile time dependencies.
+The inference is done by searching for an artifact with the name of _whiley-all_.
+It is a requirement that neither of these paths are empty, so it is recommended to add it in as described in the following section.
 
 This plugin has been tested with the following WDK versions:
 * v0.3.22
@@ -101,7 +107,8 @@ This plugin has been tested with the following WDK versions:
 
 ### Adding the WDK dependency
 
-All Whiley projects need to be compiled with the Whiley Runtime Environment and require the Whiley Java Compiler files to run. The compiler requires the whole Whiley Development Kit, which includes the runtime environment and Java compiler.
+All Whiley projects need to be compiled with the Whiley Runtime Environment and require the Whiley Java Compiler files to run.
+The compiler requires the whole Whiley Development Kit, which includes the runtime environment and Java compiler.
 
 To add the Whiley Development Kit (whiley-all) as a dependency to the project:
 
@@ -110,7 +117,7 @@ To add the Whiley Development Kit (whiley-all) as a dependency to the project:
     }
 
     dependencies {
-        compile 'whiley:whiley-all:0.3.23'
+        compile 'whiley:whiley-all:0.3.25'
     }
 
 *NOTE:*
