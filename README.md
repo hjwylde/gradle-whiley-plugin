@@ -99,11 +99,8 @@ It will attempt to infer both the bootpath (whiley runtime files) and the whiley
 The inference is done by searching for an artifact with the name of _whiley-all_.
 It is a requirement that neither of these paths are empty, so it is recommended to add it in as described in the following section.
 
-This plugin has been tested with the following WDK versions:
-* v0.3.22
-* v0.3.23
-* v0.3.24
-* v0.3.25
+This plugin was developed using Gradle v2.2 and has been tested with the following WDK versions:
+* v0.3.31
 
 ### Adding the WDK dependency
 
@@ -117,7 +114,7 @@ To add the Whiley Development Kit (whiley-all) as a dependency to the project:
     }
 
     dependencies {
-        compile 'whiley:whiley-all:0.3.25'
+        compile 'whiley:whiley-all:0.3.+'
     }
 
 *NOTE:*

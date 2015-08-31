@@ -1,0 +1,70 @@
+
+apply plugin: 'groovy'
+apply plugin: 'signing'
+apply plugin: 'maven'
+
+dependencies {
+    compile gradleApi()
+
+    compile libraries.groovy_all
+
+    compile project(':language-whiley')
+}
+
+defaultTasks 'build'
+
+task sourceJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task groovydocJar(type: Jar, dependsOn: groovydoc) {
+    classifier = 'javadoc'
+    from groovydoc.destinationDir
+}
+
+artifacts {
+    archives jar
+
+    archives sourceJar
+    archives groovydocJar
+}
+
+signing {
+    sign configurations.archives
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: uri('/home/hjwylde/git/maven-repository/repository'))
+
+            beforeDeployment {
+                MavenDeployment deployment -> signing.signPom(deployment)
+            }
+
+            pom.project {
+                name 'Gradle Whiley Plugin'
+                description 'Gradle plugin for the Whiley language'
+                url 'https://github.com/hjwylde/gradle-whiley-plugin'
+
+                licenses {
+                    license {
+                        name 'The BSD 3-Clause License'
+                        url 'http://opensource.org/licenses/BSD-3-Clause'
+                        distribution 'repo'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'hjwylde'
+                        name 'Henry J. Wylde'
+                        email 'public@hjwylde.com'
+                    }
+                }
+            }
+        }
+    }
+}
+

@@ -1,6 +1,7 @@
+
 ext {
     libraries = [:]
 }
 
-libraries.groovy_all = 'org.codehaus.groovy:groovy-all:2.2.1'
+libraries.groovy_all = 'org.codehaus.groovy:groovy-all:2.4.0-beta-3'
 
